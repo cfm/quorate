@@ -2,7 +2,7 @@ import py_school_match as psm
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from .constants import MAX_PROXIES_PER_HOLDER, PROXY_KEYS
+from constants import MAX_PROXIES_PER_HOLDER, PROXY_KEYS
 
 
 class AttendanceSnapshot(BaseModel):
