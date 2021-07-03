@@ -15,3 +15,5 @@ RUN apt-get install -y python3-cairo python3-matplotlib python3-graph-tool
 
 # Install py-school-match:
 RUN pip install py-school-match
+
+COPY ./app /app
