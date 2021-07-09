@@ -1,9 +1,16 @@
+import os
+
 import py_school_match as psm
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from constants import MAX_PROXIES_PER_HOLDER, PROXY_KEYS
+
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=os.environ.get("LOG_LEVEL", logging.DEBUG).upper())
 
 
 class AttendanceSnapshot(BaseModel):
@@ -46,7 +53,7 @@ def solve(snapshot: AttendanceSnapshot):
                 candidates[c]
                 for c in filter(lambda v: v is not "", [member[k] for k in PROXY_KEYS])
             ]
-            print(f"{t.id} prefers {[p.id for p in t.preferences]}")
+            logger.info(f"member={t.id} preferences={[p.id for p in t.preferences]}")
             targets[member["lastName"]] = t
 
     planner = psm.SocialPlanner(targets.values(), candidates.values(), psm.RuleSet())
@@ -54,6 +61,6 @@ def solve(snapshot: AttendanceSnapshot):
 
     assignments = {t: targets[t].assigned_school.id for t in targets}
     for t, p in assignments.items():
-        print(f"{t} will be represented by {p}")
+        logger.info(f"member={t} proxy={p}")
 
     return assignments
