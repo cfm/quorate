@@ -1,5 +1,6 @@
 import py_school_match as psm
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from constants import MAX_PROXIES_PER_HOLDER, PROXY_KEYS
@@ -20,6 +21,13 @@ class ProxyCandidate(psm.School):
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/solve/")
