@@ -1,4 +1,5 @@
 import os
+from typing import Dict, List
 
 import py_school_match as psm
 from fastapi import FastAPI
@@ -37,6 +38,21 @@ app.add_middleware(
 )
 
 
+def filter_present_preferences(
+    target: ProxyTarget, preferences: List[str], candidates: Dict[str, ProxyCandidate]
+):
+    for pref in preferences:
+        if pref == "":
+            continue
+        if pref not in candidates:
+            logger.debug(
+                f"target={target.id} preference={pref} does not exist in list of present candidates"
+            )
+            continue
+
+        yield candidates[pref]
+
+
 @app.post("/solve/")
 def solve(snapshot: AttendanceSnapshot):
     targets = {}
@@ -49,10 +65,15 @@ def solve(snapshot: AttendanceSnapshot):
     for member in snapshot.memberList:
         if member["lastName"] not in snapshot.presentList:
             t = ProxyTarget(member["lastName"])
-            t.preferences = [
-                candidates[c]
-                for c in filter(lambda v: v is not "", [member[k] for k in PROXY_KEYS])
-            ]
+            t.preferences = list(
+                filter_present_preferences(
+                    t, [member[k] for k in PROXY_KEYS], candidates
+                )
+            )
+            if len(t.preferences) == 0:
+                logger.warning(f"member={t.id} has no viable preferences")
+                continue
+
             logger.info(f"member={t.id} preferences={[p.id for p in t.preferences]}")
             targets[member["lastName"]] = t
 
