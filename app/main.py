@@ -20,11 +20,16 @@ class AttendanceSnapshot(BaseModel):
 
 
 class ProxyCandidate(psm.School):
-    def __init__(self, id):
-        super().__init__(MAX_PROXIES_PER_HOLDER, id)
+    def __init__(self, name):
+        super().__init__(MAX_PROXIES_PER_HOLDER)
+        self.name = name
 
 
 class ProxyTarget(psm.Student):
+    def __init__(self, name):
+        super().__init__()
+        self.name = name
+
     def set_preferences(
         self, preferences: List[str], candidates: Dict[str, ProxyCandidate]
     ):
