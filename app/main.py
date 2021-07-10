@@ -19,13 +19,32 @@ class AttendanceSnapshot(BaseModel):
     presentList: list
 
 
-class ProxyTarget(psm.Student):
-    pass
-
-
 class ProxyCandidate(psm.School):
     def __init__(self, id):
         super().__init__(MAX_PROXIES_PER_HOLDER, id)
+
+
+class ProxyTarget(psm.Student):
+    def set_preferences(
+        self, preferences: List[str], candidates: Dict[str, ProxyCandidate]
+    ):
+        self.preferences = list(
+            self._filter_present_preferences(preferences, candidates)
+        )
+
+    def _filter_present_preferences(
+        self, preferences: List[str], candidates: Dict[str, ProxyCandidate]
+    ):
+        for pref in preferences:
+            if pref == "":
+                continue
+            if pref not in candidates:
+                logger.debug(
+                    f"target={self.id} preference={pref} does not exist in list of present candidates"
+                )
+                continue
+
+            yield candidates[pref]
 
 
 app = FastAPI()
@@ -36,21 +55,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-def filter_present_preferences(
-    target: ProxyTarget, preferences: List[str], candidates: Dict[str, ProxyCandidate]
-):
-    for pref in preferences:
-        if pref == "":
-            continue
-        if pref not in candidates:
-            logger.debug(
-                f"target={target.id} preference={pref} does not exist in list of present candidates"
-            )
-            continue
-
-        yield candidates[pref]
 
 
 @app.post("/solve/")
@@ -65,16 +69,13 @@ def solve(snapshot: AttendanceSnapshot):
     for member in snapshot.memberList:
         if member["lastName"] not in snapshot.presentList:
             t = ProxyTarget(member["lastName"])
-            t.preferences = list(
-                filter_present_preferences(
-                    t, [member[k] for k in PROXY_KEYS], candidates
-                )
-            )
+
+            t.set_preferences([member[k] for k in PROXY_KEYS], candidates)
+            logger.info(f"member={t.id} preferences={[p.id for p in t.preferences]}")
             if len(t.preferences) == 0:
                 logger.warning(f"member={t.id} has no viable preferences")
                 continue
 
-            logger.info(f"member={t.id} preferences={[p.id for p in t.preferences]}")
             targets[member["lastName"]] = t
 
     planner = psm.SocialPlanner(targets.values(), candidates.values(), psm.RuleSet())
