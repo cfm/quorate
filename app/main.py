@@ -11,7 +11,7 @@ from constants import ID_KEY, LABEL_KEY, MAX_PROXIES_PER_HOLDER, PROXY_KEYS
 import logging
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=os.environ.get("LOG_LEVEL", logging.DEBUG).upper())
+logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper())
 
 
 class AttendanceSnapshot(BaseModel):
