@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from constants import ID_KEY, MAX_PROXIES_PER_HOLDER, PROXY_KEYS
+from constants import ID_KEY, LABEL_KEY, MAX_PROXIES_PER_HOLDER, PROXY_KEYS
 
 import logging
 
@@ -37,12 +37,16 @@ class ProxyCandidate(psm.School):
 
 
 class ProxyTarget(psm.Student):
-    def __init__(self, name):
+    def __init__(self, external_id, label=None) -> None:
         super().__init__()
-        self.name = name
+        self.external_id = external_id
+        self.label = label
 
     def __str__(self) -> str:
-        return f"""<ProxyTarget name="{self.name}" id={self.id} proxy={self.assigned_school}>"""
+        if self.label:
+            return f"""<ProxyTarget label="{self.label}" external_id="{self.external_id}" id={self.id} proxy={self.assigned_school}>"""
+
+        return f"""<ProxyTarget external_id={self.external_id} id={self.id} proxy={self.assigned_school}>"""
 
     def set_preferences(
         self, preferences: List[str], candidates: Dict[str, ProxyCandidate]
