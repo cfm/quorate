@@ -76,14 +76,14 @@ class ProxyTarget(psm.Student):
 
     def set_preferences(
         self, preferences: List[str], candidates: Dict[str, ProxyCandidate]
-    ):
+    ) -> None:
         self.preferences = list(
             self._filter_present_preferences(preferences, candidates)
         )
 
     def _filter_present_preferences(
         self, preferences: List[str], candidates: Dict[str, ProxyCandidate]
-    ):
+    ) -> Iterable[ProxyCandidate]:
         for pref in preferences:
             if pref == "":
                 continue
