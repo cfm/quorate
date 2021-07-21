@@ -1,5 +1,5 @@
 import os
-from typing import Dict, List
+from typing import Dict, Iterable, List, Tuple
 
 import py_school_match as psm
 from fastapi import FastAPI
@@ -17,6 +17,32 @@ logging.basicConfig(level=os.environ.get("LOG_LEVEL", logging.DEBUG).upper())
 class AttendanceSnapshot(BaseModel):
     memberList: list
     presentList: list
+
+
+class ProxySpace:
+    candidates: dict
+    targets: dict
+
+    def __init__(self) -> None:
+        self.candidates = {}
+        self.targets = {}
+
+    @property
+    def solution(self) -> Dict:
+        return dict(self._solution)
+
+    @property
+    def _solution(self) -> Iterable[Tuple]:
+        for target in self.targets.values():
+            if target.assigned_school:
+                yield (target.external_id, target.assigned_school.external_id)
+
+    def solve(self) -> None:
+        planner = psm.SocialPlanner(
+            self.targets.values(), self.candidates.values(), psm.RuleSet()
+        )
+        planner.run_matching(psm.SIC())
+        logger.info([str(t) for t in self.targets.values()])
 
 
 class ProxyCandidate(psm.School):
@@ -82,30 +108,27 @@ app.add_middleware(
 
 @app.post("/solve/")
 def solve(snapshot: AttendanceSnapshot):
-    targets = {}
-    candidates = {}
+    space = ProxySpace()
 
     for member in snapshot.memberList:
         if member[ID_KEY] in snapshot.presentList:
-            candidates[member[ID_KEY]] = ProxyCandidate(
+            space.candidates[member[ID_KEY]] = ProxyCandidate(
                 member[ID_KEY], label=member[LABEL_KEY]
             )
 
     for member in snapshot.memberList:
         if member[ID_KEY] not in snapshot.presentList:
-            t = ProxyTarget(member[ID_KEY], label=member[LABEL_KEY])
+            target = ProxyTarget(member[ID_KEY], label=member[LABEL_KEY])
 
-            t.set_preferences([member[k] for k in PROXY_KEYS], candidates)
-            logger.debug(f"{t} preferences={[p.external_id for p in t.preferences]}")
-            if len(t.preferences) == 0:
-                logger.warning(f"{t} has no viable preferences")
+            target.set_preferences([member[k] for k in PROXY_KEYS], space.candidates)
+            logger.debug(
+                f"{target} preferences={[p.external_id for p in target.preferences]}"
+            )
+            if len(target.preferences) == 0:
+                logger.warning(f"{target} has no viable preferences")
                 continue
 
-            targets[member[ID_KEY]] = t
+            space.targets[member[ID_KEY]] = target
 
-    planner = psm.SocialPlanner(targets.values(), candidates.values(), psm.RuleSet())
-    planner.run_matching(psm.SIC())
-    logger.info([str(t) for t in targets.values()])
-
-    assignments = {t: targets[t].assigned_school.external_id for t in targets}
-    return assignments
+    space.solve()
+    return space.solution
