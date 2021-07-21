@@ -1,2 +1,5 @@
 MAX_PROXIES_PER_HOLDER = 2
-PROXY_KEYS = [f"proxy{n}" for n in range(1, 11)]
+
+ID_KEY = "Id"
+LABEL_KEY = "LastName"
+PROXY_KEYS = [f"Proxy_{n}__c" for n in range(1, 11)]
