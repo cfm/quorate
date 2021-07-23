@@ -11,6 +11,9 @@
       :items="members"
       item-key="Id"
       show-select
+      fixed-header
+      must-sort
+      sort-by="LastName"
       :search="search"
     >
     </v-data-table>
