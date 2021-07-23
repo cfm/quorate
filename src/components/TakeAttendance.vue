@@ -2,7 +2,7 @@
   <v-container>
     <v-text-field v-model="search" placeholder="search roster" clearable />
     <v-data-table
-      no-data-text="The roster of members is empty."
+      no-data-text="The roster of members is empty.  If the roster doesn't load, refresh the page to try to reload it."
       v-model="present"
       dense
       disable-pagination
@@ -49,7 +49,7 @@ export default {
       });
     },
     _headers() {
-      return Object.keys(this.members[0]).map((k) => {
+      return Object.keys(this.members[0] || {}).map((k) => {
         return {
           text: k.replace('__c', '').replace('_', ' '),
           value: k,

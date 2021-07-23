@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import vuexLocal from '@/plugins/vuex-persist';
-
 import { PROXY_FIELDS } from '@/constants';
 
 Vue.use(Vuex);
@@ -51,6 +49,4 @@ export default new Vuex.Store({
     },
   },
   modules: {},
-
-  plugins: [vuexLocal.plugin],
 });
