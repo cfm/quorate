@@ -7,6 +7,9 @@
       <v-stepper-step step="2" :editable="haveAttendance">
         <v-badge dot :color="solverApiStatusColor"> Assign proxies </v-badge>
       </v-stepper-step>
+      <v-stepper-step step="3" :editable="haveAttendance">
+        Summary and transcript
+      </v-stepper-step>
     </v-stepper-header>
     <v-stepper-items>
       <v-stepper-content step="1">
@@ -15,14 +18,18 @@
       <v-stepper-content step="2">
         <AssignProxies />
       </v-stepper-content>
+      <v-stepper-content step="3">
+        <Readout />
+      </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 
 import AssignProxies from './AssignProxies';
+import Readout from './Readout';
 import TakeAttendance from './TakeAttendance';
 
 export default {
@@ -30,6 +37,7 @@ export default {
 
   components: {
     AssignProxies,
+    Readout,
     TakeAttendance,
   },
 
@@ -44,12 +52,13 @@ export default {
       members: (state) => state.memberList,
       present: (state) => state.presentList,
     }),
+    ...mapGetters(['total', 'present']),
 
     haveAttendance() {
-      return this.present.length > 0;
+      return this.present > 0;
     },
     haveMemberList() {
-      return this.members.length > 0;
+      return this.total > 0;
     },
 
     solverApiStatusColor() {

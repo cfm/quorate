@@ -19,10 +19,10 @@
           <template v-else> Refresh </template>
         </v-chip>
         <v-chip :ripple="false">
-          <v-avatar>{{ members.length }}</v-avatar> members
+          <v-avatar>{{ total }}</v-avatar> members
         </v-chip>
         <v-chip :ripple="false">
-          <v-avatar>{{ present.length }}</v-avatar> present
+          <v-avatar>{{ present }}</v-avatar> present
         </v-chip>
       </v-app-bar>
       <Wizard />
@@ -32,7 +32,7 @@
 
 <script>
 import jsforce from 'jsforce';
-import { mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 
 import { FIELDS } from '@/constants';
 import Loading from './components/Loading';
@@ -61,12 +61,10 @@ export default {
 
   computed: {
     ...mapState({
-      members: (state) => state.memberList,
-      present: (state) => state.presentList,
-
       operationIsInProgress: (state) => state.operationIsInProgress,
       operationHadError: (state) => state.operationHadError,
     }),
+    ...mapGetters(['total', 'present', 'represented']),
 
     loginRequired: function () {
       return this.conn == null;
