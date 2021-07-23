@@ -1,20 +1,27 @@
 <template>
-  <v-data-table
-    v-if="members.length > 0"
-    v-model="present"
-    dense
-    disable-pagination
-    :headers="headers"
-    hide-default-footer
-    :items="members"
-    item-key="Id"
-    show-select
-  >
-  </v-data-table>
+  <v-container>
+    <v-text-field v-model="search" placeholder="search roster" clearable />
+    <v-data-table
+      no-data-text="The roster of members is empty."
+      v-model="present"
+      dense
+      disable-pagination
+      :headers="headers"
+      hide-default-footer
+      :items="members"
+      item-key="Id"
+      show-select
+      fixed-header
+      must-sort
+      sort-by="LastName"
+      :search="search"
+    >
+    </v-data-table>
+  </v-container>
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 
 export default {
   name: 'TakeAttendance',
@@ -22,18 +29,29 @@ export default {
   data: () => {
     return {
       present: [],
+      search: '',
       EXCLUDE_HEADERS: ['Id', 'attributes'],
     };
   },
 
   computed: {
     ...mapState({
-      members: (state) => state.memberList,
+      _members: (state) => state.memberList,
     }),
+    ...mapGetters(['getProxyLastNamesForMemberById']),
+    members() {
+      return this._members.map((member) => {
+        const proxies = this.getProxyLastNamesForMemberById(member.Id);
+        return {
+          ...member,
+          ...proxies,
+        };
+      });
+    },
     _headers() {
       return Object.keys(this.members[0]).map((k) => {
         return {
-          text: k,
+          text: k.replace('__c', '').replace('_', ' '),
           value: k,
         };
       });
