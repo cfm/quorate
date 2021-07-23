@@ -59,16 +59,19 @@ export default {
     async doAssignProxies() {
       try {
         this.startOperation();
-        let res = await fetch(process.env.VUE_APP_PROXY_SOLVER_API, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        let res = await fetch(
+          `${process.env.VUE_APP_PROXY_SOLVER_API}/solve/`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              memberList: this.memberList,
+              presentList: this.presentList,
+            }),
           },
-          body: JSON.stringify({
-            memberList: this.memberList,
-            presentList: this.presentList,
-          }),
-        });
+        );
         this.proxies = await res.json();
       } catch (err) {
         this.saveOperationError(err);

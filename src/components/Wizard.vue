@@ -65,8 +65,10 @@ export default {
     ...mapMutations(['saveOperationError']),
     async checkSolverApi() {
       try {
-        let res = await fetch(process.env.VUE_APP_PROXY_SOLVER_API);
-        this.solverApiIsAvailable = res.status == 200;
+        let res = await fetch(
+          `${process.env.VUE_APP_PROXY_SOLVER_API}/health/ready/`,
+        );
+        this.solverApiIsAvailable = res.status == 204;
       } catch (err) {
         this.saveOperationError(err);
       }
