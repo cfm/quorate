@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 
 import AssignProxies from './AssignProxies';
 import TakeAttendance from './TakeAttendance';
@@ -44,12 +44,13 @@ export default {
       members: (state) => state.memberList,
       present: (state) => state.presentList,
     }),
+    ...mapGetters(['total', 'present']),
 
     haveAttendance() {
-      return this.present.length > 0;
+      return this.present > 0;
     },
     haveMemberList() {
-      return this.members.length > 0;
+      return this.total > 0;
     },
 
     solverApiStatusColor() {

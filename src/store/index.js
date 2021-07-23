@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import { sortBy } from 'lodash';
+
 import { PROXY_FIELDS } from '@/constants';
 
 Vue.use(Vuex);
@@ -47,6 +49,10 @@ export default new Vuex.Store({
       });
       return proxies;
     },
+
+    roster: (state) => sortBy(state.memberList, ['LastName', 'FirstName']),
+    total: (state) => state.memberList.length,
+    present: (state) => state.presentList.length,
   },
   modules: {},
 });
