@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+import moment from 'moment';
 import { sortBy } from 'lodash';
 
 import { PROXY_FIELDS } from '@/constants';
@@ -15,6 +16,9 @@ export default new Vuex.Store({
 
     operationIsInProgress: false,
     operationHadError: undefined,
+
+    _attendanceWasTakenTimestamp: undefined,
+    _proxiesWereAssignedTimestamp: undefined,
   },
   mutations: {
     replaceMemberList(state, memberList) {
@@ -22,9 +26,11 @@ export default new Vuex.Store({
     },
     replacePresentList(state, presentList) {
       state.presentList = presentList;
+      state._attendanceWasTakenTimestamp = Date.now();
     },
     replaceRepresentedList(state, representedList) {
       state.representedList = representedList;
+      state._proxiesWereAssignedTimestamp = Date.now();
     },
     startOperation(state) {
       state.operationIsInProgress = true;
@@ -59,6 +65,17 @@ export default new Vuex.Store({
     total: (state) => state.memberList.length,
     present: (state) => state.presentList.length,
     represented: (state) => state.representedList.length,
+
+    attendanceWasTaken: (state) => {
+      const ts = state._attendanceWasTakenTimestamp;
+      if (ts) return moment(ts).toString();
+      return 'never';
+    },
+    proxiesWereAssigned: (state) => {
+      const ts = state._proxiesWereAssignedTimestamp;
+      if (ts) return moment(ts).toString();
+      return 'never';
+    },
   },
   modules: {},
 });
