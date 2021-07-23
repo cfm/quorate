@@ -106,6 +106,11 @@ app.add_middleware(
 )
 
 
+@app.get("/health/ready/", status_code=204)
+def health_ready() -> None:
+    return
+
+
 @app.post("/solve/")
 def solve(snapshot: AttendanceSnapshot):
     space = ProxySpace()
