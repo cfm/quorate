@@ -51,7 +51,7 @@ export default {
     _headers() {
       return Object.keys(this.members[0]).map((k) => {
         return {
-          text: k,
+          text: k.replace('__c', '').replace('_', ' '),
           value: k,
         };
       });
