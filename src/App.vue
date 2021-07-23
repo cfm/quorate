@@ -89,7 +89,8 @@ export default {
     jsforce.browser.init({
       clientId: process.env.VUE_APP_SALESFORCE_CLIENT_ID,
       loginUrl: process.env.VUE_APP_SALESFORCE_LOGIN_URL,
-      redirectUri: process.env.VUE_APP_SALESFORCE_REDIRECT_URI,
+      redirectUri:
+        process.env.VUE_APP_SALESFORCE_REDIRECT_URI || process.env.VUE_APP_URL,
     });
     jsforce.browser.on('connect', (conn) => {
       console.log('Connected to Salesforce');
