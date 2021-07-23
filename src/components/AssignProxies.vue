@@ -52,6 +52,7 @@ export default {
 
   methods: {
     ...mapMutations([
+      'replaceRepresentedList',
       'startOperation',
       'saveOperationError',
       'finishOperation',
@@ -73,6 +74,7 @@ export default {
           },
         );
         this.proxies = await res.json();
+        this.replaceRepresentedList(Object.keys(this.proxies));
       } catch (err) {
         this.saveOperationError(err);
       } finally {

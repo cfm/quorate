@@ -64,7 +64,7 @@ export default {
       operationIsInProgress: (state) => state.operationIsInProgress,
       operationHadError: (state) => state.operationHadError,
     }),
-    ...mapGetters(['total', 'present']),
+    ...mapGetters(['total', 'present', 'represented']),
 
     loginRequired: function () {
       return this.conn == null;

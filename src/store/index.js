@@ -11,6 +11,8 @@ export default new Vuex.Store({
   state: {
     memberList: [],
     presentList: [],
+    representedList: [],
+
     operationIsInProgress: false,
     operationHadError: undefined,
   },
@@ -20,6 +22,9 @@ export default new Vuex.Store({
     },
     replacePresentList(state, presentList) {
       state.presentList = presentList;
+    },
+    replaceRepresentedList(state, representedList) {
+      state.representedList = representedList;
     },
     startOperation(state) {
       state.operationIsInProgress = true;
@@ -53,6 +58,7 @@ export default new Vuex.Store({
     roster: (state) => sortBy(state.memberList, ['LastName', 'FirstName']),
     total: (state) => state.memberList.length,
     present: (state) => state.presentList.length,
+    represented: (state) => state.representedList.length,
   },
   modules: {},
 });
