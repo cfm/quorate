@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 
 export default {
   name: 'TakeAttendance',
@@ -36,8 +36,18 @@ export default {
 
   computed: {
     ...mapState({
-      members: (state) => state.memberList,
+      _members: (state) => state.memberList,
     }),
+    ...mapGetters(['getProxyLastNamesForMemberById']),
+    members() {
+      return this._members.map((member) => {
+        const proxies = this.getProxyLastNamesForMemberById(member.Id);
+        return {
+          ...member,
+          ...proxies,
+        };
+      });
+    },
     _headers() {
       return Object.keys(this.members[0]).map((k) => {
         return {
