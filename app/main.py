@@ -2,9 +2,11 @@ import os
 from typing import Dict, Iterable, List, Tuple
 
 import py_school_match as psm
+import rollbar
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from rollbar.contrib.fastapi import add_to as rollbar_add_to
 
 from constants import ID_KEY, LABEL_KEY, MAX_PROXIES_PER_HOLDER, PROXY_KEYS
 
@@ -12,6 +14,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO").upper())
+
+try:
+    rollbar.init(
+        os.environ["ROLLBAR_SERVER_TOKEN"],
+        environment=os.environ.get("HEROKU_APP_NAME"),
+        include_request_body=True,
+    )
+except KeyError as exc:
+    logger.error(f"Failed to initialize Rollbar: missing {exc}")
 
 
 class AttendanceSnapshot(BaseModel):
@@ -97,6 +108,8 @@ class ProxyTarget(psm.Student):
 
 
 app = FastAPI()
+rollbar_add_to(app)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -105,9 +118,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+HAS_RECEIVED_READINESS_CHECK = False
+
 
 @app.get("/health/ready/", status_code=204)
 def health_ready() -> None:
+    global HAS_RECEIVED_READINESS_CHECK
+
+    if not HAS_RECEIVED_READINESS_CHECK:
+        HAS_RECEIVED_READINESS_CHECK = True
+        rollbar.report_message("Woken by readiness check", "info")
+
     return
 
 
