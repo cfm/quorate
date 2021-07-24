@@ -135,7 +135,7 @@ export default {
           this.finishOperation();
           if (err) {
             this.saveOperationError(err);
-            return;
+            throw err;
           }
           this.lastSync = Date.now();
           this.replaceMemberList(res.records);

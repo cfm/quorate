@@ -102,6 +102,7 @@ export default {
         this.replaceRepresentedList(Object.keys(this.proxies));
       } catch (err) {
         this.saveOperationError(err);
+        throw err;
       } finally {
         this.finishOperation();
       }
