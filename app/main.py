@@ -118,9 +118,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+HAS_RECEIVED_READINESS_CHECK = False
+
 
 @app.get("/health/ready/", status_code=204)
 def health_ready() -> None:
+    global HAS_RECEIVED_READINESS_CHECK
+
+    if not HAS_RECEIVED_READINESS_CHECK:
+        HAS_RECEIVED_READINESS_CHECK = True
+        rollbar.report_message("Woken by readiness check", "info")
+
     return
 
 
