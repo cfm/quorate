@@ -24,6 +24,21 @@
         <v-chip :ripple="false">
           <v-avatar>{{ present }}</v-avatar> present
         </v-chip>
+        <v-chip :ripple="false">
+          <v-avatar>{{ represented }}</v-avatar> represented
+        </v-chip>
+        <v-chip v-if="haveMembersQuorum" color="success" :ripple="false">
+          Members' quorum
+        </v-chip>
+        <v-chip v-else color="error" :ripple="false">
+          No members' quorum
+        </v-chip>
+        <v-chip v-if="haveDirectorsQuorum" color="success" :ripple="false">
+          Directors' quorum
+        </v-chip>
+        <v-chip v-else color="error" :ripple="false">
+          No directors' quorum
+        </v-chip>
       </v-app-bar>
       <Wizard />
     </v-main>
@@ -64,7 +79,13 @@ export default {
       operationIsInProgress: (state) => state.operationIsInProgress,
       operationHadError: (state) => state.operationHadError,
     }),
-    ...mapGetters(['total', 'present', 'represented']),
+    ...mapGetters([
+      'total',
+      'present',
+      'represented',
+      'haveMembersQuorum',
+      'haveDirectorsQuorum',
+    ]),
 
     loginRequired: function () {
       return this.conn == null;

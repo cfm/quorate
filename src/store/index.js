@@ -5,6 +5,7 @@ import moment from 'moment';
 import { sortBy } from 'lodash';
 
 import { PROXY_FIELDS } from '@/constants';
+import * as rules from '@/rules';
 
 Vue.use(Vuex);
 
@@ -65,6 +66,64 @@ export default new Vuex.Store({
     total: (state) => state.memberList.length,
     present: (state) => state.presentList.length,
     represented: (state) => state.representedList.length,
+
+    membersQuorumPresentThreshold: (state, getters) =>
+      rules.membersQuorumPresentThreshold(
+        getters.present,
+        getters.represented,
+        getters.total,
+      ),
+    membersQuorumPresentOrRepresentedThreshold: (state, getters) =>
+      rules.membersQuorumPresentOrRepresentedThreshold(
+        getters.present,
+        getters.represented,
+        getters.total,
+      ),
+    haveMembersQuorum: (state, getters) =>
+      getters.total > 0 &&
+      getters.present >= getters.membersQuorumPresentThreshold &&
+      getters.present + getters.represented >=
+        getters.membersQuorumPresentOrRepresentedThreshold,
+
+    membershipElectionThreshold: (state, getters) =>
+      rules.membershipElectionThreshold(
+        getters.present,
+        getters.represented,
+        getters.total,
+      ),
+    canElectMembers: (state, getters) =>
+      getters.total > 0 &&
+      getters.present + getters.represented >= getters.bylawsAmendmentThreshold,
+
+    bylawsAmendmentThreshold: (state, getters) =>
+      rules.bylawsAmendmentThreshold(
+        getters.present,
+        getters.represented,
+        getters.total,
+      ),
+    canPassBylawsAmendment: (state, getters) =>
+      getters.total > 0 &&
+      getters.present + getters.represented >= getters.bylawsAmendmentThreshold,
+
+    constitutionalAmendmentThreshold: (state, getters) =>
+      rules.constitutionalAmendmentThreshold(
+        getters.present,
+        getters.represented,
+        getters.total,
+      ),
+    canPassConstitutionalAmendment: (state, getters) =>
+      getters.total > 0 &&
+      getters.present + getters.represented >=
+        getters.constitutionalAmendmentThreshold,
+
+    directorsQuorumThreshold: (state, getters) =>
+      rules.directorsQuorumThreshold(
+        getters.present,
+        getters.represented,
+        getters.total,
+      ),
+    haveDirectorsQuorum: (state, getters) =>
+      getters.total > 0 && getters.present >= getters.directorsQuorumThreshold,
 
     attendanceWasTaken: (state) => {
       const ts = state._attendanceWasTakenTimestamp;
