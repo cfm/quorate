@@ -9,7 +9,7 @@
       <v-snackbar v-model="showError" color="error">
         {{ lastError }}
       </v-snackbar>
-      <v-app-bar>
+      <v-app-bar app>
         <v-chip @click="sync()">
           <v-avatar><v-icon>mdi-table-refresh</v-icon></v-avatar>
           <template v-if="lastSync">
