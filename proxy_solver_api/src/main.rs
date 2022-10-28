@@ -32,7 +32,7 @@ fn rocket() -> _ {
 #[cfg(test)]
 mod test {
     use super::rocket;
-    use rocket::http::Status;
+    use rocket::http::{ContentType, Status};
     use rocket::local::blocking::Client;
 
     #[test]
@@ -40,5 +40,18 @@ mod test {
         let client = Client::tracked(rocket()).expect("valid rocket instance");
         let response = client.get(uri!(super::health_ready)).dispatch();
         assert_eq!(response.status(), Status::NoContent);
+    }
+
+    #[test]
+    fn test_solution_counts() {
+        let client = Client::tracked(rocket()).expect("valid rocket instance");
+        let response = client.post(uri!(super::solution)).header(ContentType::JSON).body(
+            r#"{"members": ["L. L. Nunn", "Herbert Reich"], "members_present": ["Herbert Reich"]}"#,
+        ).dispatch();
+        assert_eq!(response.status(), Status::Ok);
+        assert_eq!(
+            response.into_string().unwrap(),
+            r#"{"members":2,"members_present":1}"#
+        )
     }
 }
