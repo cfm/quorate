@@ -8,7 +8,7 @@ use rand::thread_rng;
 use rocket::http::Status;
 use rocket::serde::json::{json, Json, Value};
 use rocket::serde::Deserialize;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 #[get("/health/ready")]
 fn health_ready() -> Status {
@@ -61,10 +61,12 @@ fn solution(snapshot: Json<AttendanceSnapshot>) -> Value {
     }
 
     let mut absents: HashMap<String, Student> = HashMap::new();
+    let mut unrepresented: HashSet<String> = HashSet::new();
     for info in &snapshot.members {
         if !presents.contains_key(&info.id) {
             let absent = <Student as Member>::from_info(info, &presents);
             absents.insert(info.id.clone(), absent);
+            unrepresented.insert(info.id.clone());
         }
     }
 
@@ -78,15 +80,18 @@ fn solution(snapshot: Json<AttendanceSnapshot>) -> Value {
         &mut rng,
     );
 
+    let mut proxies: HashMap<String, String> = HashMap::new();
     for present in presents.values() {
         for absent in result.placed.get(&present.name).unwrap_or(&Vec::new()) {
+            unrepresented.remove(&absent.name);
+            proxies.insert(absent.name.clone(), present.name.clone());
             println!("{} → {}", &present.name, &absent.name);
         }
     }
 
     json!({
-        "absent": absents.len(),
-        "present": presents.len(),
+        "represented": proxies,
+        "unrepresented": unrepresented,
     })
 }
 
@@ -131,7 +136,7 @@ mod test {
         assert_eq!(response.status(), Status::Ok);
         assert_eq!(
             response.into_string().unwrap(),
-            r#"{"absent":1,"present":2}"#
+            r#"{"represented":{"nunn":"reich"},"unrepresented":[]}"#
         )
     }
 
@@ -157,7 +162,7 @@ mod test {
         assert_eq!(response.status(), Status::Ok);
         assert_eq!(
             response.into_string().unwrap(),
-            r#"{"absent":2,"present":1}"#
+            r#"{"represented":{"nunn":"whitney"},"unrepresented":["reich"]}"#
         )
     }
 }
