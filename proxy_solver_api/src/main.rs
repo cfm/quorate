@@ -47,24 +47,26 @@ struct AttendanceSnapshot {
 
 #[post("/solution", data = "<snapshot>")]
 fn solution(snapshot: Json<AttendanceSnapshot>) -> Value {
-    let mut members_present: HashMap<String, Category> = HashMap::new();
+    let mut presents: HashMap<String, Category> = HashMap::new();
     for id in &snapshot.members_present {
-        let member = Category::new(&id, 2); // FIXME: constant
-        members_present.insert(id.clone(), member);
+        let present = Category::new(&id, 2); // FIXME: constant
+        presents.insert(id.clone(), present);
     }
 
-    let mut members: HashMap<String, Student> = HashMap::new();
+    let mut absents: HashMap<String, Student> = HashMap::new();
     for info in &snapshot.members {
-        let member = <Student as Member>::from_info(info, &members_present);
-        members.insert(info.id.clone(), member);
+        if !presents.contains_key(&info.id) {
+            let absent = <Student as Member>::from_info(info, &presents);
+            absents.insert(info.id.clone(), absent);
+        }
     }
 
-    println! {"Members ({}): {:?}", members.len(), members.keys()}
-    println! {"Present ({}): {:?}", members_present.len(), members_present.keys()}
+    println! {"absent={} members={:?}", absents.len(), absents.keys()}
+    println! {"present={} members={:?}", presents.len(), presents.keys()}
 
     json!({
-        "members": members.len(),
-        "members_present": members_present.len(),
+        "absent": absents.len(),
+        "present": presents.len(),
     })
 }
 
@@ -109,7 +111,7 @@ mod test {
         assert_eq!(response.status(), Status::Ok);
         assert_eq!(
             response.into_string().unwrap(),
-            r#"{"members":3,"members_present":2}"#
+            r#"{"absent":1,"present":2}"#
         )
     }
 }
