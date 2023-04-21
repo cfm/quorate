@@ -36,7 +36,12 @@ impl Member for Student {
                 .map(|k| present.get(k).unwrap())
                 .cloned()
                 .collect(),
-            exclude: Vec::new(),
+            exclude: present
+                .values()
+                .filter(|&v| !info.preferences.contains(&v.name))
+                .map(|v| present.get(&v.name).unwrap())
+                .cloned()
+                .collect(),
         }
     }
 }
@@ -104,7 +109,7 @@ mod test {
     }
 
     #[test]
-    fn test_solution_counts() {
+    fn test_first_choice_available() {
         let client = Client::tracked(rocket()).expect("valid rocket instance");
         let response = client
             .post(uri!(super::solution))
@@ -127,6 +132,32 @@ mod test {
         assert_eq!(
             response.into_string().unwrap(),
             r#"{"absent":1,"present":2}"#
+        )
+    }
+
+    #[test]
+    fn test_second_choice_available() {
+        let client = Client::tracked(rocket()).expect("valid rocket instance");
+        let response = client
+            .post(uri!(super::solution))
+            .header(ContentType::JSON)
+            .body(
+                r#"{
+                "members": [
+                    {"id": "nunn", "preferences": ["reich", "whitney"]},
+                    {"id": "reich", "preferences": []},
+                    {"id": "whitney", "preferences": []}
+                ],
+                "members_present": [
+                    "whitney"
+                ]
+            }"#,
+            )
+            .dispatch();
+        assert_eq!(response.status(), Status::Ok);
+        assert_eq!(
+            response.into_string().unwrap(),
+            r#"{"absent":2,"present":1}"#
         )
     }
 }
