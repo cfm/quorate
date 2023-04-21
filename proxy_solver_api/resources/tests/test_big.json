@@ -1,0 +1,596 @@
+{
+    "members": [
+        {
+            "id": "Ellison",
+            "preferences": [
+                "Garza",
+                "Ford",
+                "Lee",
+                "Woodard",
+                "Ellis",
+                "Rodriguez",
+                "Jones"
+            ]
+        },
+        {
+            "id": "Nelson",
+            "preferences": [
+                "Moore",
+                "Williams",
+                "Marsh",
+                "Allison",
+                "Gates",
+                "Cline",
+                "Livingston",
+                "Robbins"
+            ]
+        },
+        {
+            "id": "Ford",
+            "preferences": [
+                "Robbins",
+                "Church",
+                "Woodard",
+                "George",
+                "Ellis",
+                "Garza",
+                "Santos",
+                "Cox",
+                "Marsh"
+            ]
+        },
+        {
+            "id": "Russell",
+            "preferences": [
+                "Moyer",
+                "Gates",
+                "Marsh",
+                "Livingston"
+            ]
+        },
+        {
+            "id": "Berger",
+            "preferences": [
+                "George",
+                "Ellis",
+                "Davis"
+            ]
+        },
+        {
+            "id": "Becker",
+            "preferences": [
+                "Allison",
+                "Fisher"
+            ]
+        },
+        {
+            "id": "Hammond",
+            "preferences": [
+                "Gordon",
+                "Moore",
+                "Ellis"
+            ]
+        },
+        {
+            "id": "Fisher",
+            "preferences": [
+                "Mcknight",
+                "Allen",
+                "Cox",
+                "Lee"
+            ]
+        },
+        {
+            "id": "Moyer",
+            "preferences": [
+                "Macias"
+            ]
+        },
+        {
+            "id": "Lee",
+            "preferences": [
+                "Carpenter",
+                "Robbins",
+                "Church",
+                "Alvarez",
+                "Rowland"
+            ]
+        },
+        {
+            "id": "Hernandez",
+            "preferences": [
+                "Marsh",
+                "Garrett",
+                "Rowland"
+            ]
+        },
+        {
+            "id": "Hull",
+            "preferences": [
+                "Rowland",
+                "Garrett",
+                "Ellison",
+                "Sullivan",
+                "Petersen",
+                "Anderson"
+            ]
+        },
+        {
+            "id": "Alvarez",
+            "preferences": []
+        },
+        {
+            "id": "Jackson",
+            "preferences": [
+                "Mcknight",
+                "Davis",
+                "Marsh"
+            ]
+        },
+        {
+            "id": "Mendoza",
+            "preferences": [
+                "Mcknight",
+                "Hammond"
+            ]
+        },
+        {
+            "id": "Cline",
+            "preferences": [
+                "Mcknight",
+                "Allison",
+                "Zavala",
+                "Moyer",
+                "Woodard",
+                "Church",
+                "Livingston"
+            ]
+        },
+        {
+            "id": "Kent",
+            "preferences": []
+        },
+        {
+            "id": "Woodard",
+            "preferences": [
+                "Rowland",
+                "Robbins",
+                "Lee",
+                "Alvarez",
+                "Hernandez",
+                "Carpenter",
+                "Mcknight"
+            ]
+        },
+        {
+            "id": "Armstrong",
+            "preferences": [
+                "George",
+                "Ford",
+                "Rowland"
+            ]
+        },
+        {
+            "id": "Allen",
+            "preferences": []
+        },
+        {
+            "id": "Garrett",
+            "preferences": [
+                "Hicks",
+                "Rowland",
+                "Gates"
+            ]
+        },
+        {
+            "id": "Gordon",
+            "preferences": []
+        },
+        {
+            "id": "Smith",
+            "preferences": [
+                "Rowland",
+                "Livingston"
+            ]
+        },
+        {
+            "id": "Gates",
+            "preferences": [
+                "Church",
+                "Garrett",
+                "Mcknight",
+                "Cox",
+                "Perez",
+                "Williams",
+                "Ellis",
+                "Moore",
+                "Woodard"
+            ]
+        },
+        {
+            "id": "Allison",
+            "preferences": [
+                "Cline",
+                "Rowland",
+                "Edwards",
+                "Marsh"
+            ]
+        },
+        {
+            "id": "Ellis",
+            "preferences": [
+                "George",
+                "Edwards",
+                "Hicks",
+                "Petersen",
+                "Santos"
+            ]
+        },
+        {
+            "id": "Bell",
+            "preferences": [
+                "Ellis",
+                "Edwards",
+                "Barton",
+                "Livingston",
+                "George"
+            ]
+        },
+        {
+            "id": "Hicks",
+            "preferences": [
+                "Garrett",
+                "Zavala",
+                "Allen",
+                "Garza"
+            ]
+        },
+        {
+            "id": "Lopez",
+            "preferences": [
+                "Ford",
+                "George"
+            ]
+        },
+        {
+            "id": "Edwards",
+            "preferences": [
+                "Allison",
+                "Cline",
+                "Gates"
+            ]
+        },
+        {
+            "id": "Williams",
+            "preferences": [
+                "Nelson",
+                "George",
+                "Church",
+                "Livingston"
+            ]
+        },
+        {
+            "id": "Reid",
+            "preferences": [
+                "Moore"
+            ]
+        },
+        {
+            "id": "Cox",
+            "preferences": [
+                "Lee",
+                "Alvarez",
+                "Smith",
+                "Fisher",
+                "Church",
+                "Mcknight",
+                "Berger"
+            ]
+        },
+        {
+            "id": "Anderson",
+            "preferences": [
+                "Ellison",
+                "Nelson",
+                "Allison",
+                "Cline",
+                "Cox",
+                "Garza",
+                "Edwards"
+            ]
+        },
+        {
+            "id": "Garza",
+            "preferences": [
+                "Robbins",
+                "Rowland",
+                "Allen",
+                "Santos",
+                "Petersen"
+            ]
+        },
+        {
+            "id": "Franco",
+            "preferences": []
+        },
+        {
+            "id": "Mcknight",
+            "preferences": [
+                "Cox",
+                "Marsh",
+                "Gates",
+                "Allen",
+                "Cline",
+                "Woodard",
+                "Robbins",
+                "Nelson",
+                "Franco"
+            ]
+        },
+        {
+            "id": "Petersen",
+            "preferences": [
+                "Robbins",
+                "Moore",
+                "Garza",
+                "Livingston",
+                "Cox",
+                "Santos",
+                "Ellis"
+            ]
+        },
+        {
+            "id": "Hunter",
+            "preferences": [
+                "Allen",
+                "Rowland"
+            ]
+        },
+        {
+            "id": "Perez",
+            "preferences": [
+                "Cline",
+                "Gates",
+                "Moore",
+                "Cox",
+                "Allison",
+                "Moyer",
+                "Alvarez",
+                "Mcknight"
+            ]
+        },
+        {
+            "id": "Church",
+            "preferences": [
+                "Lee",
+                "Rowland",
+                "Zavala",
+                "Alvarez"
+            ]
+        },
+        {
+            "id": "Davis",
+            "preferences": [
+                "Zavala",
+                "Church",
+                "Ellis",
+                "Jones",
+                "George",
+                "Rowland",
+                "Garza",
+                "Ford"
+            ]
+        },
+        {
+            "id": "Livingston",
+            "preferences": [
+                "Smith",
+                "Rowland",
+                "Alvarez",
+                "Robbins",
+                "Williams",
+                "Cline",
+                "Rodriguez",
+                "Petersen"
+            ]
+        },
+        {
+            "id": "Romero",
+            "preferences": [
+                "Anderson",
+                "Edwards"
+            ]
+        },
+        {
+            "id": "Sullivan",
+            "preferences": [
+                "Allen",
+                "Allison",
+                "Cox"
+            ]
+        },
+        {
+            "id": "Zavala",
+            "preferences": [
+                "Davis",
+                "George",
+                "Rowland",
+                "Macias",
+                "Marsh"
+            ]
+        },
+        {
+            "id": "Marsh",
+            "preferences": [
+                "Mcknight",
+                "Barton",
+                "Allison",
+                "Cline",
+                "Allen",
+                "Moore",
+                "Petersen",
+                "Livingston"
+            ]
+        },
+        {
+            "id": "Rodriguez",
+            "preferences": [
+                "Ellis",
+                "Church",
+                "Thomas",
+                "Cox",
+                "Cline",
+                "Davis",
+                "Carpenter"
+            ]
+        },
+        {
+            "id": "Santos",
+            "preferences": [
+                "Robbins",
+                "Petersen",
+                "Rowland",
+                "Garza",
+                "Ford",
+                "Becker",
+                "Woodard",
+                "George",
+                "Allison"
+            ]
+        },
+        {
+            "id": "Taylor",
+            "preferences": []
+        },
+        {
+            "id": "Thomas",
+            "preferences": [
+                "Cox"
+            ]
+        },
+        {
+            "id": "Moore",
+            "preferences": [
+                "Ellis",
+                "Petersen",
+                "George",
+                "Ellison",
+                "Hernandez",
+                "Cox",
+                "Ford"
+            ]
+        },
+        {
+            "id": "George",
+            "preferences": [
+                "Robbins",
+                "Petersen",
+                "Mcknight",
+                "Carpenter",
+                "Livingston",
+                "Ford",
+                "Rodriguez",
+                "Fisher"
+            ]
+        },
+        {
+            "id": "Macias",
+            "preferences": [
+                "Lee",
+                "Rowland",
+                "Moyer",
+                "Cline",
+                "Jones",
+                "Zavala",
+                "Marsh",
+                "Gates",
+                "Allen"
+            ]
+        },
+        {
+            "id": "Robbins",
+            "preferences": [
+                "Livingston",
+                "Petersen",
+                "Macias",
+                "Alvarez",
+                "Rodriguez",
+                "Cox",
+                "Ellis",
+                "Carpenter",
+                "Ford"
+            ]
+        },
+        {
+            "id": "Carpenter",
+            "preferences": [
+                "Lee",
+                "Alvarez",
+                "Woodard",
+                "Rowland",
+                "Robbins",
+                "Ellis",
+                "Zavala",
+                "Davis"
+            ]
+        },
+        {
+            "id": "Rowland",
+            "preferences": [
+                "Woodard",
+                "Lee",
+                "Alvarez",
+                "Robbins",
+                "Carpenter",
+                "Jones",
+                "Cox"
+            ]
+        },
+        {
+            "id": "Jones",
+            "preferences": [
+                "Rowland",
+                "Ford",
+                "Hull",
+                "George",
+                "Ellison"
+            ]
+        },
+        {
+            "id": "Barton",
+            "preferences": [
+                "Marsh"
+            ]
+        },
+        {
+            "id": "Castillo",
+            "preferences": [
+                "Nelson",
+                "Cox",
+                "Gates",
+                "Cline",
+                "Ellison",
+                "Sullivan",
+                "Moore"
+            ]
+        },
+        {
+            "id": "Matthews",
+            "preferences": [
+                "Zavala"
+            ]
+        }
+    ],
+    "members_present": [
+        "Ellison",
+        "Hammond",
+        "Cline",
+        "Ellis",
+        "Bell",
+        "Mcknight",
+        "Perez",
+        "Davis",
+        "George",
+        "Macias"
+    ]
+}

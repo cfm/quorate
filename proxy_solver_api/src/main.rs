@@ -105,6 +105,8 @@ mod test {
     use super::rocket;
     use rocket::http::{ContentType, Status};
     use rocket::local::blocking::Client;
+    use std::path::PathBuf;
+    use std::{env, fs};
 
     #[test]
     fn test_health_ready() {
@@ -164,5 +166,29 @@ mod test {
             response.into_string().unwrap(),
             r#"{"represented":{"nunn":"whitney"},"unrepresented":["reich"]}"#
         )
+    }
+
+    #[test]
+    fn test_big() {
+        let mut request_from = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        request_from.push("resources/tests/test_big.json");
+        let request = fs::read(request_from).unwrap();
+
+        let mut expected_from = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        expected_from.push("resources/tests/test_big.result.json");
+        let expected: String = fs::read_to_string(expected_from)
+            .unwrap()
+            .chars()
+            .filter(|c| !c.is_whitespace())
+            .collect();
+
+        let client = Client::tracked(rocket()).expect("valid rocket instance");
+        let response = client
+            .post(uri!(super::solution))
+            .header(ContentType::JSON)
+            .body(&request)
+            .dispatch();
+        assert_eq!(response.status(), Status::Ok);
+        assert_eq!(response.into_string().unwrap(), expected,)
     }
 }

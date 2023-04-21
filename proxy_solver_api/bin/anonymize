@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+import json
+import sys
+
+from faker import Faker
+
+fake = Faker()
+data = json.load(sys.stdin)
+
+mapping = {}
+for member in data["members"]:
+    k = member["id"]
+    while True:
+        name = fake.last_name()
+        if not name in mapping.values():
+            break
+
+    mapping[k] = name
+
+members = []
+for member in data["members"]:
+    k = member["id"]
+
+    prefs = []
+    for x in member["preferences"]:
+        try:
+            prefs.append(mapping[x])
+        except KeyError:
+            continue
+
+    members.append(
+        {
+            "id": mapping[k],
+            "preferences": prefs,
+        }
+    )
+
+members_present = []
+for member in data["members_present"]:
+    k = member
+    try:
+        members_present.append(mapping[k])
+    except KeyError:
+        continue
+
+print(json.dumps({"members": members, "members_present": members_present}))
