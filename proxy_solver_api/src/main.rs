@@ -2,7 +2,9 @@
 extern crate matchmaker;
 #[macro_use]
 extern crate rocket;
+use matchmaker::da_stb::match_students;
 use matchmaker::{Category, Student};
+use rand::thread_rng;
 use rocket::http::Status;
 use rocket::serde::json::{json, Json, Value};
 use rocket::serde::Deserialize;
@@ -63,6 +65,19 @@ fn solution(snapshot: Json<AttendanceSnapshot>) -> Value {
 
     println! {"absent={} members={:?}", absents.len(), absents.keys()}
     println! {"present={} members={:?}", presents.len(), presents.keys()}
+
+    let mut rng = thread_rng();
+    let result = match_students(
+        absents.clone().into_values().collect(),
+        &Vec::from(presents.clone().into_values().collect::<Vec<_>>()),
+        &mut rng,
+    );
+
+    for present in presents.values() {
+        for absent in result.placed.get(&present.name).unwrap_or(&Vec::new()) {
+            println!("{} → {}", &present.name, &absent.name);
+        }
+    }
 
     json!({
         "absent": absents.len(),
