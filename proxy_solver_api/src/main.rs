@@ -53,11 +53,11 @@ struct AttendanceSnapshot {
     members_present: Vec<String>,
 }
 
-#[post("/solution", data = "<snapshot>")]
-fn solution(snapshot: Json<AttendanceSnapshot>) -> Value {
+#[post("/solution/<capacity>", data = "<snapshot>")]
+fn solution(capacity: usize, snapshot: Json<AttendanceSnapshot>) -> Value {
     let mut presents: IndexMap<String, Category> = IndexMap::new();
     for id in &snapshot.members_present {
-        let present = Category::new(&id, 2); // FIXME: constant
+        let present = Category::new(&id, capacity);
         presents.insert(id.clone(), present);
     }
 
@@ -123,7 +123,7 @@ mod test {
     fn test_first_choice_available() {
         let client = Client::tracked(rocket()).expect("valid rocket instance");
         let response = client
-            .post(uri!(super::solution))
+            .post(uri!(super::solution(capacity = 2)))
             .header(ContentType::JSON)
             .body(
                 r#"{
@@ -150,7 +150,7 @@ mod test {
     fn test_second_choice_available() {
         let client = Client::tracked(rocket()).expect("valid rocket instance");
         let response = client
-            .post(uri!(super::solution))
+            .post(uri!(super::solution(capacity = 2)))
             .header(ContentType::JSON)
             .body(
                 r#"{
@@ -188,7 +188,7 @@ mod test {
 
         let client = Client::tracked(rocket()).expect("valid rocket instance");
         let response = client
-            .post(uri!(super::solution))
+            .post(uri!(super::solution(capacity = 2)))
             .header(ContentType::JSON)
             .body(&request)
             .dispatch();
