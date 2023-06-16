@@ -1,0 +1,29 @@
+name: ci
+
+on: push
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: proxy_solver_api/
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: make check
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: proxy_solver_api/
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: make test
