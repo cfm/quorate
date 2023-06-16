@@ -6,5 +6,5 @@ fmt:
 	cargo fmt
 
 test:
-	clear
+	clear || true
 	cargo test -- --show-output
