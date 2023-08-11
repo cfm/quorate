@@ -10,4 +10,5 @@ RUN cargo install --path .
 # Run:
 FROM debian:bullseye-slim
 COPY --from=builder /usr/local/cargo/bin/proxy-solver-api /usr/local/bin/proxy-solver-api
-CMD ["proxy-solver-api"]
+COPY entrypoint.sh /entrypoint.sh
+CMD ["/entrypoint.sh"]
