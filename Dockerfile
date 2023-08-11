@@ -8,7 +8,7 @@ COPY proxy_solver_api .
 RUN cargo install --path .
 
 # Run:
-FROM debian:bullseye-slim
+FROM nginx:latest
 COPY --from=builder /usr/local/cargo/bin/proxy-solver-api /usr/local/bin/proxy-solver-api
-COPY entrypoint.sh /entrypoint.sh
-CMD ["/entrypoint.sh"]
+COPY nginx.conf /etc/nginx/templates/default.conf.template
+COPY entrypoint.sh /docker-entrypoint.d/99-entrypoint.sh
