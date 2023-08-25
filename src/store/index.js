@@ -13,7 +13,7 @@ export default new Vuex.Store({
   state: {
     memberList: [],
     presentList: [],
-    representedList: [],
+    representation: {},
 
     operationIsInProgress: false,
     operationHadError: undefined,
@@ -29,8 +29,8 @@ export default new Vuex.Store({
       state.presentList = presentList;
       state._attendanceWasTakenTimestamp = Date.now();
     },
-    replaceRepresentedList(state, representedList) {
-      state.representedList = representedList;
+    updateRepresentation(state, representation) {
+      state.representation = representation;
       state._proxiesWereAssignedTimestamp = Date.now();
     },
     startOperation(state) {
@@ -52,6 +52,10 @@ export default new Vuex.Store({
       if (member != undefined) return member.LastName;
       return '';
     },
+    getProxyIdListForMemberById: (state, getters) => (id) => {
+      const member = getters.getMemberById(id);
+      return PROXY_FIELDS.map((k) => member[k]).filter((v) => v);
+    },
     getProxyLastNamesForMemberById: (state, getters) => (id) => {
       const member = getters.getMemberById(id);
       const proxies = {};
@@ -65,7 +69,7 @@ export default new Vuex.Store({
     roster: (state) => sortBy(state.memberList, ['LastName', 'FirstName']),
     total: (state) => state.memberList.length,
     present: (state) => state.presentList.length,
-    represented: (state) => state.representedList.length,
+    represented: (state) => Object.keys(state.representation).length,
 
     membersQuorumPresentThreshold: (state, getters) =>
       rules.membersQuorumPresentThreshold(

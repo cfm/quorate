@@ -19,4 +19,6 @@ module.exports = {
 
   FIELDS: keys.map((k) => k.sf),
   PROXY_FIELDS: proxyKeys.map((k) => k.sf),
+
+  MAX_REPRESENTATION: 2,
 };

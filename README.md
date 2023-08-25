@@ -1,47 +1,35 @@
 # ta-attendance-tools
 
+A Vue.js client for attendance and proxy assignments, backed by Salesforce and
+[proxy-solver-api].
+
 ## Project setup
+
 ```
 npm install
 ```
 
 ### Compiles and hot-reloads for development
+
 ```
-netlify dev
+netlify dev    # See <https://github.com/cfm/ta-attendance-tools/pull/36> for OAuth, or use
+npm run serve  # locally.
 ```
 
 ### Compiles and minifies for production
+
 ```
 npm run build
 ```
 
 ### Lints and fixes files
+
 ```
 npm run lint
 ```
 
 ### Customize configuration
+
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-## Graph representation of proxy candidates and assignments
-
-If member X lists members A, B, and C as their possible proxies and is ultimately represented by C, then we say that:
-
-1. X is the target, who is initially unrepresented;
-2. A, B, and C are the candidates; and
-3. C is the proxy ultimately assigned to represent X.
-
-X, A, B, and C are all nodes.  Links are defined as
-
-    {
-        u: target,
-        v: candidate,
-        w: weight,
-    }
-
-such that the adjacent-node list for target `u` is the set of candidates `v` to represent it.
-
-Therefore, a node's
-
-* indegree = number of members it could represent; and
-* outdegree = number of candidates that could represent it.
+[proxy-solver-api]: https://github.com/cfm/proxy-solver-api

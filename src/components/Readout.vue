@@ -172,8 +172,9 @@
                 <template v-if="presentList.includes(member.Id)">
                   is present
                 </template>
-                <template v-else-if="representedList.includes(member.Id)">
-                  is absent and represented by proxy
+                <template v-else-if="member.Id in representation">
+                  is absent and represented by
+                  {{ getMemberById(representation[member.Id]).LastName }}
                 </template>
                 <template v-else>is absent and not represented </template>
               </li>
@@ -194,9 +195,11 @@ export default {
   computed: {
     ...mapState({
       presentList: (state) => state.presentList,
-      representedList: (state) => state.representedList,
+      representation: (state) => state.representation,
     }),
     ...mapGetters([
+      'getMemberById',
+
       'roster',
       'total',
       'present',

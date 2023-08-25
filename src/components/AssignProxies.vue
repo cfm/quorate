@@ -27,21 +27,24 @@ import { mapGetters, mapMutations, mapState } from 'vuex';
 
 import { fromPairs } from 'lodash';
 
+import { MAX_REPRESENTATION } from '@/constants';
+
 export default {
   name: 'AssignProxies',
 
   data: () => ({
     transcript: '',
-    proxies: null,
   }),
 
   computed: {
     ...mapState({
       memberList: (state) => state.memberList,
       presentList: (state) => state.presentList,
+      representation: (state) => state.representation,
     }),
     ...mapGetters([
       'getMemberById',
+      'getProxyIdListForMemberById',
       'roster',
       'represented',
       'proxiesWereAssigned',
@@ -58,12 +61,9 @@ export default {
     },
     _assignments: function () {
       let assignments = {};
-      if (!this.proxies) return assignments;
+      if (!this.representation) return assignments;
 
-      Object.entries(this.proxies).forEach(([represented, holder]) => {
-        represented = represented.trim();
-        holder = holder.trim();
-
+      Object.entries(this.representation).forEach(([represented, holder]) => {
         if (assignments[holder]) {
           assignments[holder].push(represented);
         } else {
@@ -77,7 +77,7 @@ export default {
 
   methods: {
     ...mapMutations([
-      'replaceRepresentedList',
+      'updateRepresentation',
       'startOperation',
       'saveOperationError',
       'finishOperation',
@@ -86,20 +86,25 @@ export default {
       try {
         this.startOperation();
         let res = await fetch(
-          `${process.env.VUE_APP_PROXY_SOLVER_API}/solve/`,
+          `${process.env.VUE_APP_PROXY_SOLVER_API}/solution/${MAX_REPRESENTATION}`,
           {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              memberList: this.memberList,
-              presentList: this.presentList,
+              members: this.memberList.map((member) => {
+                return {
+                  id: member.Id,
+                  preferences: this.getProxyIdListForMemberById(member.Id),
+                };
+              }),
+              members_present: this.presentList,
             }),
           },
         );
-        this.proxies = await res.json();
-        this.replaceRepresentedList(Object.keys(this.proxies));
+        const solution = await res.json();
+        this.updateRepresentation(solution.represented);
       } catch (err) {
         this.saveOperationError(err);
         throw err;
