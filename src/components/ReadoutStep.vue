@@ -190,7 +190,7 @@
 import { mapGetters, mapState } from 'vuex';
 
 export default {
-  name: 'Readout',
+  name: 'ReadoutStep',
 
   computed: {
     ...mapState({

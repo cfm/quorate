@@ -1,8 +1,8 @@
 <template>
   <v-app>
     <v-main>
-      <Login v-if="loginRequired" />
-      <Loading v-if="operationIsInProgress" />
+      <LoginDialog v-if="loginRequired" />
+      <LoadingOverlay v-if="operationIsInProgress" />
       <v-snackbar v-model="showConnectedToSalesforce" color="success">
         Connected to Salesforce
       </v-snackbar>
@@ -40,7 +40,7 @@
           No directors' quorum
         </v-chip>
       </v-app-bar>
-      <Wizard />
+      <AttendanceWizard />
     </v-main>
   </v-app>
 </template>
@@ -50,17 +50,17 @@ import jsforce from 'jsforce';
 import { mapGetters, mapMutations, mapState } from 'vuex';
 
 import { FIELDS } from '@/constants';
-import Loading from './components/Loading';
-import Login from './components/Login';
-import Wizard from './components/Wizard';
+import LoadingOverlay from './components/LoadingOverlay';
+import LoginDialog from './components/LoginDialog';
+import AttendanceWizard from './components/AttendanceWizard';
 
 export default {
   name: 'App',
 
   components: {
-    Loading,
-    Login,
-    Wizard,
+    LoadingOverlay,
+    LoginDialog,
+    AttendanceWizard,
   },
 
   data() {

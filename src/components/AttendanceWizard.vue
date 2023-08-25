@@ -13,13 +13,13 @@
     </v-stepper-header>
     <v-stepper-items>
       <v-stepper-content step="1">
-        <TakeAttendance />
+        <TakeAttendanceStep />
       </v-stepper-content>
       <v-stepper-content step="2">
-        <AssignProxies />
+        <AssignProxiesStep />
       </v-stepper-content>
       <v-stepper-content step="3">
-        <Readout />
+        <ReadoutStep />
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -28,17 +28,17 @@
 <script>
 import { mapGetters, mapMutations, mapState } from 'vuex';
 
-import AssignProxies from './AssignProxies';
-import Readout from './Readout';
-import TakeAttendance from './TakeAttendance';
+import AssignProxiesStep from './AssignProxiesStep';
+import ReadoutStep from './ReadoutStep';
+import TakeAttendanceStep from './TakeAttendanceStep';
 
 export default {
-  name: 'Wizard',
+  name: 'AttendanceWizard',
 
   components: {
-    AssignProxies,
-    Readout,
-    TakeAttendance,
+    AssignProxiesStep,
+    ReadoutStep,
+    TakeAttendanceStep,
   },
 
   data() {

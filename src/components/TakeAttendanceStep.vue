@@ -24,7 +24,7 @@
 import { mapGetters, mapMutations, mapState } from 'vuex';
 
 export default {
-  name: 'TakeAttendance',
+  name: 'TakeAttendanceStep',
 
   data: () => {
     return {

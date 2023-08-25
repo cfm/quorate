@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-btn @click="doAssignProxies">Assign Proxies</v-btn>
+    <v-btn @click="doAssignProxiesStep">Assign Proxies</v-btn>
     <template v-if="represented > 0">
       <h2>Assignments as of {{ proxiesWereAssigned }}</h2>
       <ul>
@@ -30,7 +30,7 @@ import { fromPairs } from 'lodash';
 import { MAX_REPRESENTATION } from '@/constants';
 
 export default {
-  name: 'AssignProxies',
+  name: 'AssignProxiesStep',
 
   data: () => ({
     transcript: '',
@@ -82,7 +82,7 @@ export default {
       'saveOperationError',
       'finishOperation',
     ]),
-    async doAssignProxies() {
+    async doAssignProxiesStep() {
       try {
         this.startOperation();
         let res = await fetch(
