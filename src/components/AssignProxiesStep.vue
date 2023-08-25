@@ -5,15 +5,15 @@
       <h2>Assignments as of {{ proxiesWereAssigned }}</h2>
       <ul>
         <li
-          v-for="[holder, assignments] in Object.entries(assignments)"
+          v-for="[holder, representing] in Object.entries(assignments)"
           :key="holder"
         >
           {{ getMemberById(holder).FirstName }}
           {{ getMemberById(holder).LastName }} holds
           {{ assignments.length }} proxy/ies for:
-          <span v-for="(assignment, key) in assignments" :key="assignment">
-            {{ getMemberById(assignment).FirstName }}
-            {{ getMemberById(assignment).LastName
+          <span v-for="(represented, key) in representing" :key="represented">
+            {{ getMemberById(represented).FirstName }}
+            {{ getMemberById(represented).LastName
             }}<span v-if="key + 1 != assignments.length">,</span>
           </span>
         </li>

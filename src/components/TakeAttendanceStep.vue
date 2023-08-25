@@ -2,8 +2,8 @@
   <v-container>
     <v-text-field v-model="search" placeholder="search roster" clearable />
     <v-data-table
-      no-data-text="The roster of members is empty.  If the roster doesn't load, refresh the page to try to reload it."
       v-model="present"
+      no-data-text="The roster of members is empty.  If the roster doesn't load, refresh the page to try to reload it."
       dense
       disable-pagination
       :headers="headers"
@@ -64,14 +64,14 @@ export default {
     },
   },
 
-  methods: {
-    ...mapMutations(['replacePresentList']),
-  },
-
   watch: {
     present(val) {
       this.replacePresentList(val.map((member) => member.Id));
     },
+  },
+
+  methods: {
+    ...mapMutations(['replacePresentList']),
   },
 };
 </script>

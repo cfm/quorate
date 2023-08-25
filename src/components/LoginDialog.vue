@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title>Please log in via Salesforce.</v-card-title>
       <v-card-actions>
-        <v-btn @click="login()" :title="loginUrl">Log In</v-btn>
+        <v-btn :title="loginUrl" @click="login()">Log In</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
