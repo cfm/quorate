@@ -4,7 +4,7 @@
 # Build:
 FROM rust:1.67 as builder
 WORKDIR /usr/src/proxy-solver-api
-COPY proxy_solver_api .
+COPY . .
 RUN cargo install --path .
 
 # Run:

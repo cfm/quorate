@@ -695,7 +695,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "proxy_solver_api"
+name = "proxy-solver-api"
 version = "0.1.0"
 dependencies = [
  "indexmap",
