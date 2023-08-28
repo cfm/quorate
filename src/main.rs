@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate matchmaker;
 #[macro_use]
 extern crate rocket;
@@ -57,7 +56,7 @@ struct AttendanceSnapshot {
 fn solution(capacity: usize, snapshot: Json<AttendanceSnapshot>) -> Value {
     let mut presents: IndexMap<String, Category> = IndexMap::new();
     for id in &snapshot.members_present {
-        let present = Category::new(&id, capacity);
+        let present = Category::new(id, capacity);
         presents.insert(id.clone(), present);
     }
 
@@ -77,7 +76,7 @@ fn solution(capacity: usize, snapshot: Json<AttendanceSnapshot>) -> Value {
     let mut rng = StdRng::seed_from_u64(0);
     let result = match_students(
         absents.clone().into_values().collect(),
-        &Vec::from(presents.clone().into_values().collect::<Vec<_>>()),
+        &presents.clone().into_values().collect::<Vec<_>>(),
         &mut rng,
     );
 
