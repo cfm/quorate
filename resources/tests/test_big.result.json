@@ -1,5 +1,5 @@
 {
-    "represented": {
+    "members_represented": {
         "Anderson": "Ellison",
         "Carpenter": "Davis",
         "Edwards": "Cline",
@@ -16,7 +16,7 @@
         "Woodard": "Mcknight",
         "Zavala": "Davis"
     },
-    "unrepresented": [
+    "members_unrepresented": [
         "Allen",
         "Allison",
         "Alvarez",

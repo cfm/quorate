@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate derive_new;
 extern crate matchmaker;
 #[macro_use]
 extern crate rocket;
@@ -23,18 +25,20 @@ fn health_ready(log: Slogger) -> Status {
     Status::NoContent
 }
 
+type MemberId = String;
+
 #[derive(Deserialize)]
 struct MemberInfo {
-    id: String,
-    preferences: Vec<String>,
+    id: MemberId,
+    preferences: Vec<MemberId>,
 }
 
 trait Member {
-    fn from_info(info: &MemberInfo, present: &IndexMap<String, Category>) -> Student;
+    fn from_info(info: &MemberInfo, present: &IndexMap<MemberId, Category>) -> Student;
 }
 
 impl Member for Student {
-    fn from_info(info: &MemberInfo, present: &IndexMap<String, Category>) -> Student {
+    fn from_info(info: &MemberInfo, present: &IndexMap<MemberId, Category>) -> Student {
         Student {
             name: info.id.clone(),
             preferences: info
@@ -55,75 +59,114 @@ impl Member for Student {
 }
 
 #[derive(Deserialize)]
-struct AttendanceSnapshot {
+struct ProxyProblem {
+    capacity: usize,
     members: Vec<MemberInfo>,
-    members_present: Vec<String>,
+    members_present: Vec<MemberId>,
 }
 
-// TODO: ProxySolution v. AttendanceSnapshot
+#[derive(new, Serialize)]
+struct ProxySolution {
+    #[serde(skip)]
+    capacity: usize,
+
+    #[new(default)]
+    #[serde(skip)]
+    members_present: IndexMap<MemberId, Category>,
+
+    #[new(default)]
+    #[serde(skip)]
+    members_absent: IndexMap<MemberId, Student>,
+
+    #[new(default)]
+    members_represented: IndexMap<MemberId, MemberId>,
+
+    #[new(default)]
+    members_unrepresented: IndexSet<MemberId>,
+}
+
 #[derive(Clone, SerdeValue, Serialize)]
 struct ProxyMetrics {
     capacity: usize,
-    absent: usize,
+    total: usize,
     present: usize,
+    absent: usize,
     represented: usize,
     unrepresented: usize,
 }
 
-#[post("/solution/<capacity>", data = "<snapshot>")]
-fn solution(log: Slogger, capacity: usize, snapshot: Json<AttendanceSnapshot>) -> Value {
-    let mut presents: IndexMap<String, Category> = IndexMap::new();
-    for id in &snapshot.members_present {
-        let present = Category::new(id, capacity);
-        presents.insert(id.clone(), present);
+impl ProxySolution {
+    fn from_problem(problem: &ProxyProblem) -> Self {
+        let mut solution = Self::new(problem.capacity);
+        solution.load_attendance(&problem.members_present);
+        solution.load_preferences(&problem.members);
+
+        solution
     }
 
-    let mut absents: IndexMap<String, Student> = IndexMap::new();
-    let mut unrepresented: IndexSet<String> = IndexSet::new();
-    for info in &snapshot.members {
-        if !presents.contains_key(&info.id) {
-            let absent = <Student as Member>::from_info(info, &presents);
-            absents.insert(info.id.clone(), absent);
-            unrepresented.insert(info.id.clone());
+    fn get_metrics(&mut self) -> ProxyMetrics {
+        ProxyMetrics {
+            capacity: self.capacity,
+            total: self.members_present.len() + self.members_absent.len(),
+            present: self.members_present.len(),
+            absent: self.members_absent.len(),
+            represented: self.members_represented.len(),
+            unrepresented: self.members_unrepresented.len(),
         }
     }
 
-    let mut metrics = ProxyMetrics {
-        capacity,
-        present: presents.len(),
-        absent: absents.len(),
-        represented: 0,
-        unrepresented: absents.len(),
-    };
-    info!(log, "Beginning solution"; "metrics" => &metrics);
-
-    let mut rng = StdRng::seed_from_u64(0);
-    let result = match_students(
-        absents.clone().into_values().collect(),
-        &presents.clone().into_values().collect::<Vec<_>>(),
-        &mut rng,
-    );
-
-    let mut proxies: IndexMap<String, String> = IndexMap::new();
-    for present in presents.values() {
-        for absent in result.placed.get(&present.name).unwrap_or(&Vec::new()) {
-            unrepresented.remove(&absent.name);
-            proxies.insert(absent.name.clone(), present.name.clone());
-            debug!(log, "Proxy assigned"; "proxy_for" => absent.name.clone(), "proxied_by" => present.name.clone());
+    fn load_attendance(&mut self, members_present: &Vec<MemberId>) {
+        for id in members_present {
+            let present = Category::new(id, self.capacity);
+            self.members_present.insert(id.clone(), present);
         }
     }
 
-    proxies.sort_keys();
-    unrepresented.sort();
+    fn load_preferences(&mut self, members: &Vec<MemberInfo>) {
+        for info in members {
+            if !self.members_present.contains_key(&info.id) {
+                let absent = <Student as Member>::from_info(info, &self.members_present);
+                self.members_absent.insert(info.id.clone(), absent);
+                self.members_unrepresented.insert(info.id.clone());
+            }
+        }
+    }
 
-    metrics.represented = proxies.len();
-    metrics.unrepresented = unrepresented.len();
-    info!(log, "Solved"; "metrics" => &metrics);
+    fn solve(&mut self, log: &Slogger) {
+        let mut rng = StdRng::seed_from_u64(0);
+        let result = match_students(
+            self.members_absent.clone().into_values().collect(),
+            &self
+                .members_present
+                .clone()
+                .into_values()
+                .collect::<Vec<_>>(),
+            &mut rng,
+        );
 
-    json!({
-        "represented": proxies,
-        "unrepresented": unrepresented,
-    })
+        for present in self.members_present.values() {
+            for absent in result.placed.get(&present.name).unwrap_or(&Vec::new()) {
+                self.members_unrepresented.remove(&absent.name);
+                self.members_represented
+                    .insert(absent.name.clone(), present.name.clone());
+                debug!(log, "Proxy assigned"; "proxy_for" => absent.name.clone(), "proxied_by" => present.name.clone());
+            }
+        }
+
+        self.members_represented.sort_keys();
+        self.members_unrepresented.sort();
+    }
+}
+
+#[post("/solution", data = "<problem>")]
+fn solution(log: Slogger, problem: Json<ProxyProblem>) -> Value {
+    let mut solution = ProxySolution::from_problem(&problem);
+
+    info!(log, "Beginning solution"; "metrics" => solution.get_metrics());
+    solution.solve(&log);
+
+    info!(log, "Solved"; "metrics" => solution.get_metrics());
+    json!(solution)
 }
 
 #[launch]
@@ -157,10 +200,11 @@ mod test {
     fn test_first_choice_available() {
         let client = Client::tracked(rocket()).expect("valid rocket instance");
         let response = client
-            .post(uri!(super::solution(capacity = 2)))
+            .post(uri!(super::solution()))
             .header(ContentType::JSON)
             .body(
                 r#"{
+                "capacity": 2,
                 "members": [
                     {"id": "nunn", "preferences": ["reich", "whitney"]},
                     {"id": "reich", "preferences": []},
@@ -176,7 +220,7 @@ mod test {
         assert_eq!(response.status(), Status::Ok);
         assert_eq!(
             response.into_string().unwrap(),
-            r#"{"represented":{"nunn":"reich"},"unrepresented":[]}"#
+            r#"{"members_represented":{"nunn":"reich"},"members_unrepresented":[]}"#
         )
     }
 
@@ -184,10 +228,11 @@ mod test {
     fn test_second_choice_available() {
         let client = Client::tracked(rocket()).expect("valid rocket instance");
         let response = client
-            .post(uri!(super::solution(capacity = 2)))
+            .post(uri!(super::solution()))
             .header(ContentType::JSON)
             .body(
                 r#"{
+                "capacity": 2,
                 "members": [
                     {"id": "nunn", "preferences": ["reich", "whitney"]},
                     {"id": "reich", "preferences": []},
@@ -202,7 +247,7 @@ mod test {
         assert_eq!(response.status(), Status::Ok);
         assert_eq!(
             response.into_string().unwrap(),
-            r#"{"represented":{"nunn":"whitney"},"unrepresented":["reich"]}"#
+            r#"{"members_represented":{"nunn":"whitney"},"members_unrepresented":["reich"]}"#
         )
     }
 
@@ -222,7 +267,7 @@ mod test {
 
         let client = Client::tracked(rocket()).expect("valid rocket instance");
         let response = client
-            .post(uri!(super::solution(capacity = 2)))
+            .post(uri!(super::solution()))
             .header(ContentType::JSON)
             .body(&request)
             .dispatch();
