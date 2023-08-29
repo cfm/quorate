@@ -56,8 +56,6 @@ mod test {
     use super::rocket;
     use rocket::http::{ContentType, Status};
     use rocket::local::blocking::Client;
-    use std::path::PathBuf;
-    use std::{env, fs};
 
     #[test]
     fn test_health_ready() {
@@ -123,14 +121,8 @@ mod test {
 
     #[test]
     fn test_big() {
-        let mut request_from = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        request_from.push("resources/tests/test_big.json");
-        let request = fs::read(request_from).unwrap();
-
-        let mut expected_from = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        expected_from.push("resources/tests/test_big.result.json");
-        let expected: String = fs::read_to_string(expected_from)
-            .unwrap()
+        let request = include_str!("../resources/tests/test_big.json");
+        let expected: String = include_str!("../resources/tests/test_big.result.json")
             .chars()
             .filter(|c| !c.is_whitespace())
             .collect();
