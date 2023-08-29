@@ -3,6 +3,8 @@ extern crate matchmaker;
 extern crate rocket;
 #[macro_use]
 extern crate rocket_slogger;
+#[macro_use]
+extern crate slog_derive;
 use indexmap::map::IndexMap;
 use indexmap::set::IndexSet;
 use matchmaker::da_stb::match_students;
@@ -12,7 +14,7 @@ use rocket::config::Config;
 use rocket::http::Status;
 use rocket::log::LogLevel;
 use rocket::serde::json::{json, Json, Value};
-use rocket::serde::Deserialize;
+use rocket::serde::{Deserialize, Serialize};
 use rocket_slogger::Slogger;
 
 #[get("/health/ready")]
@@ -59,6 +61,7 @@ struct AttendanceSnapshot {
 }
 
 // TODO: ProxySolution v. AttendanceSnapshot
+#[derive(Clone, SerdeValue, Serialize)]
 struct ProxyMetrics {
     capacity: usize,
     absent: usize,
@@ -92,7 +95,7 @@ fn solution(log: Slogger, capacity: usize, snapshot: Json<AttendanceSnapshot>) -
         represented: 0,
         unrepresented: absents.len(),
     };
-    info!(log, "Beginning solution"; "capacity" => metrics.capacity, "present" => metrics.present, "absent" => metrics.absent);
+    info!(log, "Beginning solution"; "metrics" => &metrics);
 
     let mut rng = StdRng::seed_from_u64(0);
     let result = match_students(
@@ -115,7 +118,7 @@ fn solution(log: Slogger, capacity: usize, snapshot: Json<AttendanceSnapshot>) -
 
     metrics.represented = proxies.len();
     metrics.unrepresented = unrepresented.len();
-    info!(log, "Solved"; "capacity" => metrics.capacity, "present" => metrics.present, "absent" => metrics.absent, "represented" => metrics.represented, "unrepresented" => metrics.unrepresented);
+    info!(log, "Solved"; "metrics" => &metrics);
 
     json!({
         "represented": proxies,
