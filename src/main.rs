@@ -1,17 +1,23 @@
 extern crate matchmaker;
 #[macro_use]
 extern crate rocket;
+#[macro_use]
+extern crate rocket_slogger;
 use indexmap::map::IndexMap;
 use indexmap::set::IndexSet;
 use matchmaker::da_stb::match_students;
 use matchmaker::{Category, Student};
 use rand::{rngs::StdRng, SeedableRng};
+use rocket::config::Config;
 use rocket::http::Status;
+use rocket::log::LogLevel;
 use rocket::serde::json::{json, Json, Value};
 use rocket::serde::Deserialize;
+use rocket_slogger::Slogger;
 
 #[get("/health/ready")]
-fn health_ready() -> Status {
+fn health_ready(log: Slogger) -> Status {
+    info!(log, "Ready");
     Status::NoContent
 }
 
@@ -52,8 +58,17 @@ struct AttendanceSnapshot {
     members_present: Vec<String>,
 }
 
+// TODO: ProxySolution v. AttendanceSnapshot
+struct ProxyMetrics {
+    capacity: usize,
+    absent: usize,
+    present: usize,
+    represented: usize,
+    unrepresented: usize,
+}
+
 #[post("/solution/<capacity>", data = "<snapshot>")]
-fn solution(capacity: usize, snapshot: Json<AttendanceSnapshot>) -> Value {
+fn solution(log: Slogger, capacity: usize, snapshot: Json<AttendanceSnapshot>) -> Value {
     let mut presents: IndexMap<String, Category> = IndexMap::new();
     for id in &snapshot.members_present {
         let present = Category::new(id, capacity);
@@ -70,8 +85,14 @@ fn solution(capacity: usize, snapshot: Json<AttendanceSnapshot>) -> Value {
         }
     }
 
-    println! {"absent={} members={:?}", absents.len(), absents.keys()}
-    println! {"present={} members={:?}", presents.len(), presents.keys()}
+    let mut metrics = ProxyMetrics {
+        capacity,
+        present: presents.len(),
+        absent: absents.len(),
+        represented: 0,
+        unrepresented: absents.len(),
+    };
+    info!(log, "Beginning solution"; "capacity" => metrics.capacity, "present" => metrics.present, "absent" => metrics.absent);
 
     let mut rng = StdRng::seed_from_u64(0);
     let result = match_students(
@@ -85,12 +106,16 @@ fn solution(capacity: usize, snapshot: Json<AttendanceSnapshot>) -> Value {
         for absent in result.placed.get(&present.name).unwrap_or(&Vec::new()) {
             unrepresented.remove(&absent.name);
             proxies.insert(absent.name.clone(), present.name.clone());
-            println!("{} → {}", &present.name, &absent.name);
+            debug!(log, "Proxy assigned"; "proxy_for" => absent.name.clone(), "proxied_by" => present.name.clone());
         }
     }
 
     proxies.sort_keys();
     unrepresented.sort();
+
+    metrics.represented = proxies.len();
+    metrics.unrepresented = unrepresented.len();
+    info!(log, "Solved"; "capacity" => metrics.capacity, "present" => metrics.present, "absent" => metrics.absent, "represented" => metrics.represented, "unrepresented" => metrics.unrepresented);
 
     json!({
         "represented": proxies,
@@ -100,7 +125,14 @@ fn solution(capacity: usize, snapshot: Json<AttendanceSnapshot>) -> Value {
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![health_ready, solution])
+    let fairing = Slogger::new_bunyan_logger(env!("CARGO_PKG_NAME"));
+
+    let mut config = Config::from(Config::figment());
+    config.log_level = LogLevel::Off;
+
+    rocket::build()
+        .attach(fairing)
+        .mount("/", routes![health_ready, solution])
 }
 
 #[cfg(test)]

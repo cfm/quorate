@@ -10,4 +10,7 @@ indexmap = "1.9.3"
 matchmaker = "0.1.0"
 rand = "0.7.3"
 rocket = { version = "0.5.0-rc.3", features = ["json"] }
+rocket-slogger = { version = "0.1.0", features = ["bunyan", "transactions"] }
 serde = { version = "1.0", features = ["derive"] }
+slog = { version = "2.7.0" }
+slog-bunyan = "2.4.0"
