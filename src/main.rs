@@ -18,25 +18,28 @@ extern crate slog_derive;
 use rocket::config::Config;
 use rocket::http::Status;
 use rocket::log::LogLevel;
-use rocket::serde::json::{json, Json, Value};
+use rocket::serde::json::Json;
+use rocket_okapi::{openapi, openapi_get_routes};
 
 use rocket_slogger::Slogger;
 
+#[openapi(ignore = "log")]
 #[get("/health/ready")]
 fn get_health_ready(log: Slogger) -> Status {
     info!(log, "Ready");
     Status::NoContent
 }
 
+#[openapi(ignore = "log")]
 #[post("/solution", data = "<problem>")]
-fn post_solution(log: Slogger, problem: Json<ProxyProblem>) -> Value {
+fn post_solution(log: Slogger, problem: Json<ProxyProblem>) -> Json<ProxySolution> {
     let mut solution = ProxySolution::from_problem(&problem);
 
     info!(log, "Beginning solution"; "metrics" => solution.get_metrics());
     solution.solve(&log);
 
     info!(log, "Solved"; "metrics" => solution.get_metrics());
-    json!(solution)
+    Json(solution)
 }
 
 #[launch]
@@ -48,7 +51,7 @@ fn rocket() -> _ {
 
     rocket::build()
         .attach(fairing)
-        .mount("/", routes![get_health_ready, post_solution])
+        .mount("/", openapi_get_routes![get_health_ready, post_solution])
 }
 
 #[cfg(test)]

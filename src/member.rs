@@ -3,6 +3,7 @@ use indexmap::map::IndexMap;
 use matchmaker::{Category, Student};
 
 use rocket::serde::Deserialize;
+use rocket_okapi::JsonSchema;
 
 pub type MemberId = String;
 
@@ -31,7 +32,7 @@ impl Member for Student {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, JsonSchema)]
 pub struct MemberInfo {
     pub id: MemberId,
     pub preferences: Vec<MemberId>,

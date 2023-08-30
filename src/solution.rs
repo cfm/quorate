@@ -8,6 +8,7 @@ use matchmaker::{Category, Student};
 use rand::{rngs::StdRng, SeedableRng};
 
 use rocket::serde::Serialize;
+use rocket_okapi::JsonSchema;
 use rocket_slogger::Slogger;
 
 #[derive(Clone, SerdeValue, Serialize)]
@@ -20,7 +21,7 @@ pub struct ProxyMetrics {
     pub unrepresented: usize,
 }
 
-#[derive(new, Serialize)]
+#[derive(new, JsonSchema, Serialize)]
 pub struct ProxySolution {
     #[serde(skip)]
     pub capacity: usize,
