@@ -87,16 +87,14 @@ export default {
       try {
         this.startOperation();
         let res = await solver.post_solution({
-          body: {
-            capacity: MAX_REPRESENTATION,
-            members: this.memberList.map((member) => {
-              return {
-                id: member.Id,
-                preferences: this.getProxyIdListForMemberById(member.Id),
-              };
-            }),
-            members_present: this.presentList,
-          },
+          capacity: MAX_REPRESENTATION,
+          members: this.memberList.map((member) => {
+            return {
+              id: member.Id,
+              preferences: this.getProxyIdListForMemberById(member.Id),
+            };
+          }),
+          members_present: this.presentList,
         });
         const solution = await res.data();
 
