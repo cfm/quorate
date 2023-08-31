@@ -1,0 +1,167 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "proxy-solver-api",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health/ready": {
+      "get": {
+        "operationId": "get_health_ready",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/solution": {
+      "post": {
+        "operationId": "post_solution",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["capacity", "members", "members_present"],
+                "properties": {
+                  "capacity": {
+                    "type": "integer",
+                    "format": "uint",
+                    "minimum": 0
+                  },
+                  "members": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": ["id", "preferences"],
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "preferences": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "members_present": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["members_represented", "members_unrepresented"],
+                  "properties": {
+                    "members_represented": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "members_unrepresented": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "uniqueItems": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProxySolution": {
+        "type": "object",
+        "required": ["members_represented", "members_unrepresented"],
+        "properties": {
+          "members_represented": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "members_unrepresented": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        }
+      },
+      "ProxyProblem": {
+        "type": "object",
+        "required": ["capacity", "members", "members_present"],
+        "properties": {
+          "capacity": {
+            "type": "integer",
+            "format": "uint",
+            "minimum": 0
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "preferences"],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "preferences": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "members_present": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "MemberInfo": {
+        "type": "object",
+        "required": ["id", "preferences"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "preferences": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

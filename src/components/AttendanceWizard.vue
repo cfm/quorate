@@ -28,6 +28,8 @@
 <script>
 import { mapGetters, mapMutations, mapState } from 'vuex';
 
+import solver from '../solver';
+
 import AssignProxiesStep from './AssignProxiesStep';
 import ReadoutStep from './ReadoutStep';
 import TakeAttendanceStep from './TakeAttendanceStep';
@@ -66,17 +68,11 @@ export default {
     },
   },
 
-  async mounted() {
-    await this.checkSolverApi();
-  },
-
   methods: {
     ...mapMutations(['saveOperationError']),
     async checkSolverApi() {
       try {
-        let res = await fetch(
-          `${process.env.VUE_APP_PROXY_SOLVER_API}/health/ready`,
-        );
+        let res = await solver.get_health_ready();
         this.solverApiIsAvailable = res.status == 204;
       } catch (err) {
         this.saveOperationError(err);
@@ -88,6 +84,7 @@ export default {
     checkSolverApi: {
       time: 60 * 1000,
       autostart: true,
+      immediate: true,
       repeat: true,
     },
   },
