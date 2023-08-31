@@ -1,3 +1,5 @@
+#![warn(missing_docs)]
+//! Rocket server and API endpoints.
 use crate::problem::ProxyProblem;
 use crate::solution::ProxySolution;
 
@@ -25,6 +27,7 @@ use rocket_slogger::Slogger;
 
 #[openapi(ignore = "log")]
 #[get("/health/ready")]
+/// Wakes up the API, for example if sleeping at Heroku.
 fn get_health_ready(log: Slogger) -> Status {
     info!(log, "Ready");
     Status::NoContent
@@ -32,6 +35,9 @@ fn get_health_ready(log: Slogger) -> Status {
 
 #[openapi(ignore = "log")]
 #[post("/solution", data = "<problem>")]
+/// Given a [`problem::ProxyProblem`], computes and returns the
+/// [`solution::ProxySolution`].  `ProxySolution` is deterministic and constant
+/// for a given `ProxyProblem`.
 fn post_solution(log: Slogger, problem: Json<ProxyProblem>) -> Json<ProxySolution> {
     let mut solution = ProxySolution::from_problem(&problem);
 
@@ -43,6 +49,7 @@ fn post_solution(log: Slogger, problem: Json<ProxyProblem>) -> Json<ProxySolutio
 }
 
 #[launch]
+/// Sets up Rocket routing, plus extras for logging and OpenAPI generation.
 fn rocket() -> _ {
     let fairing = Slogger::new_bunyan_logger(env!("CARGO_PKG_NAME"));
 
