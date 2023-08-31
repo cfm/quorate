@@ -4,6 +4,16 @@
     "title": "proxy-solver-api",
     "version": "0.1.0"
   },
+  "servers": [
+    {
+      "url": "https://{server}",
+      "variables": {
+        "server": {
+          "default": "localhost"
+        }
+      }
+    }
+  ],
   "paths": {
     "/health/ready": {
       "get": {
