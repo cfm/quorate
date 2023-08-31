@@ -28,6 +28,7 @@ import { mapGetters, mapMutations, mapState } from 'vuex';
 import { fromPairs } from 'lodash';
 
 import { MAX_REPRESENTATION } from '@/constants';
+import solver from '../solver'; // FIXME: '@/solver' with IDE resolution
 
 export default {
   name: 'AssignProxiesStep',
@@ -85,26 +86,22 @@ export default {
     async doAssignProxiesStep() {
       try {
         this.startOperation();
-        let res = await fetch(
-          `${process.env.VUE_APP_PROXY_SOLVER_API}/solution/${MAX_REPRESENTATION}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              members: this.memberList.map((member) => {
-                return {
-                  id: member.Id,
-                  preferences: this.getProxyIdListForMemberById(member.Id),
-                };
-              }),
-              members_present: this.presentList,
+        let res = await solver.post_solution({
+          body: {
+            capacity: MAX_REPRESENTATION,
+            members: this.memberList.map((member) => {
+              return {
+                id: member.Id,
+                preferences: this.getProxyIdListForMemberById(member.Id),
+              };
             }),
+            members_present: this.presentList,
           },
-        );
-        const solution = await res.json();
-        this.updateRepresentation(solution.represented);
+        });
+        const solution = await res.data();
+
+        // FIXME: Why not store the whole solution?
+        this.updateRepresentation(solution.members_represented);
       } catch (err) {
         this.saveOperationError(err);
         throw err;
