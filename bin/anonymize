@@ -1,4 +1,25 @@
 #!/usr/bin/env python
+"""
+Given standard input like...
+
+    {
+        "members": [
+            {
+                "id": "Alice",
+                "preferences": ["Bob"]
+            },
+            {
+                "id": "Bob",
+                "preferences": [],
+            }
+        ],
+        "members_present": ["Alice"]
+    }
+
+...replace each token in {"Alice", "Bob", ...} with a random token throughout,
+preserving their relationships.
+"""
+
 import json
 import sys
 
