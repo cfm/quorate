@@ -15,6 +15,9 @@ check-py: bin/anonymize
 	black --check $<
 	isort --check $<
 
+docs:
+	cargo doc --no-deps
+
 fmt:
 	cargo fmt
 
