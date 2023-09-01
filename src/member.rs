@@ -33,8 +33,7 @@ impl Member for Student {
             preferences: info
                 .preferences
                 .iter()
-                .filter(|&k| present.contains_key(k))
-                .map(|k| present.get(k).unwrap())
+                .filter_map(|k| present.get(k))
                 .cloned()
                 .collect(),
             exclude: present
