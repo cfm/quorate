@@ -4,6 +4,10 @@
 
 {{readme}}
 
+## Architecture
+
+https://github.com/cfm/ta-attendance-tools/wiki
+
 ## Getting started
 
 Beyond the usual `cargo {build,run,test}` invocations, `make {build,run}` wrap

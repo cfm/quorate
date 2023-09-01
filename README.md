@@ -16,6 +16,10 @@ exclusive _proxy preferences_.
 
 [bcp-14]: https://datatracker.ietf.org/doc/html/rfc2119
 
+## Architecture
+
+https://github.com/cfm/ta-attendance-tools/wiki
+
 ## Getting started
 
 Beyond the usual `cargo {build,run,test}` invocations, `make {build,run}` wrap
