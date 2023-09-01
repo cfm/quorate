@@ -1,5 +1,20 @@
 #![warn(missing_docs)]
-//! Rocket server and API endpoints.
+/*!
+A one-trick API for matching a member `A` absent from a meeting to a member `P`
+present at the meeting, according to whether and where `P` is listed in in `A`'s
+exclusive _proxy preferences_.
+
+- If `P` is in `A`'s proxy preferences, then `P` [MAY][bcp-14] represent `A`.
+
+- If `P` is not in `A`'s proxy preferences, then `P` [MAY NOT][bcp-14] represent
+  `A`.
+
+- Each `P` has a (that is, the same) _proxy capacity_ `c` and MAY represent up
+  to `c` `A`s.
+
+[bcp-14]: https://datatracker.ietf.org/doc/html/rfc2119
+*/
+
 use crate::problem::ProxyProblem;
 use crate::solution::ProxySolution;
 

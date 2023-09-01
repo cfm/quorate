@@ -21,6 +21,8 @@ docs:
 fmt:
 	cargo fmt
 
+readme: README.md
+
 run:
 	docker run \
 		--env PORT=${PORT} \
@@ -34,3 +36,6 @@ test:
 venv:
 	virtualenv --python python3 ${VENV}
 	${VENV}/bin/pip3 install --requirement ${PYTHON_REQUIREMENTS}
+
+README.md: README.tpl src/main.rs
+	cargo readme > $@
