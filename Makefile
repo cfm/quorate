@@ -7,6 +7,8 @@ PYTHON_REQUIREMENTS=requirements.txt
 build:
 	docker build --tag ${THIS} .
 
+cargo:
+	cargo install cargo-readme
 
 check: check-readme
 	cargo fmt -- --check
