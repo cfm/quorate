@@ -4,8 +4,8 @@ use indexmap::map::IndexMap;
 
 use matchmaker::{Category, Student};
 
-use rocket::serde::Deserialize;
 use rocket_okapi::JsonSchema;
+use serde::Deserialize;
 
 /// An opaque [`String`] that uniquely keys a [`Member`] and identifies their
 /// [`MemberInfo`]`.preferences`.

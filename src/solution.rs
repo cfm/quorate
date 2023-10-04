@@ -8,9 +8,9 @@ use matchmaker::da_stb::match_students;
 use matchmaker::Student;
 use rand::{rngs::StdRng, SeedableRng};
 
-use rocket::serde::Serialize;
 use rocket_okapi::JsonSchema;
 use rocket_slogger::Slogger;
+use serde::Serialize;
 
 #[derive(Clone, SerdeValue, Serialize)]
 /// Metrics for how much representation the [`crate::solution::ProxySolution`]

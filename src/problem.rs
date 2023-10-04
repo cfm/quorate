@@ -1,8 +1,8 @@
 //! A proxy-representation problem to solve.
 use crate::member::{MemberId, MemberInfo};
 
-use rocket::serde::Deserialize;
 use rocket_okapi::JsonSchema;
+use serde::Deserialize;
 
 #[derive(Deserialize, JsonSchema)]
 /// A proxy-representation problem to solve.
