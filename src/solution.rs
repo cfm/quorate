@@ -14,17 +14,17 @@ use rocket_slogger::Slogger;
 use serde::Serialize;
 
 #[derive(new, JsonSchema, Serialize)]
-/// A pending or computed solution to a [`crate::problem::ProxyProblem`].
+/// A pending or computed solution to a [`ProxyProblem`].
 pub struct ProxySolution {
     #[serde(skip)]
-    /// From [`crate::problem::ProxyProblem`]: How many absent members each
-    /// present member MAY represent.
+    /// From [`ProxyProblem`]: How many absent members each present member MAY
+    /// represent.
     pub capacity: usize,
 
     #[new(default)]
     #[serde(skip)]
-    /// A present member is a [`crate::member::Proxy`] that can represent up to
-    /// `capacity` member/s.
+    /// A present member is a [`Proxy`] that can represent up to `capacity`
+    /// member/s.
     pub members_present: IndexMap<MemberId, Proxy>,
 
     #[new(default)]
@@ -42,7 +42,7 @@ pub struct ProxySolution {
 }
 
 impl ProxySolution {
-    /// Loads the constraints of a [`crate::problem::ProxyProblem`] to be solved.
+    /// Loads the constraints of a [`ProxyProblem`] to be solved.
     pub fn from_problem(problem: &ProxyProblem) -> Self {
         let mut solution = Self::new(problem.capacity);
         solution.load_attendance(&problem.members_present);
@@ -64,9 +64,9 @@ impl ProxySolution {
         }
     }
 
-    /// Computes the solution to the loaded [`crate::problem::ProxyProblem`].
+    /// Computes the solution to the loaded [`ProxyProblem`].
     ///
-    /// Under the hood, this is `matchmaker::match_students()` with a
+    /// Under the hood, this is `matchmaker::da_stb::match_students()` with a
     /// zero-seeded PRNG for deterministic solutions.
     pub fn solve(&mut self, log: &Slogger) {
         let mut rng = StdRng::seed_from_u64(0);
@@ -99,8 +99,7 @@ impl ProxySolution {
 
     /// Sets the *presence* constraints on the [`ProxySolution`].
     ///
-    /// Converts present [`crate::member::MemberId`]s into available
-    /// [`crate::member::Proxy`]s.
+    /// Converts present [`MemberId`]s into available [`Proxy`]s.
     fn load_attendance(&mut self, members_present: &Vec<MemberId>) {
         for id in members_present {
             let present = Proxy::new(id, self.capacity);
@@ -110,8 +109,7 @@ impl ProxySolution {
 
     /// Sets the *preference* constraints on the [`ProxySolution`].
     ///
-    /// Converts all [`crate::member::MemberInfo`]s into
-    /// [`crate::member::Member`]s.
+    /// Converts all [`MemberInfo`]s into [`Member`]s.
     fn load_preferences(&mut self, members: &Vec<MemberInfo>) {
         for info in members {
             if !self.members_present.contains_key(&info.id) {

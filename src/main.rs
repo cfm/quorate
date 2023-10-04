@@ -13,7 +13,6 @@ pub mod solution;
 
 #[macro_use]
 extern crate derive_new;
-extern crate matchmaker;
 #[macro_use]
 extern crate rocket;
 #[macro_use]
@@ -64,7 +63,7 @@ fn rocket() -> _ {
 
 #[cfg(test)]
 mod test {
-    use super::rocket;
+    use super::*;
     use rocket::http::{ContentType, Status};
     use rocket::local::blocking::Client;
 
