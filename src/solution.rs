@@ -1,5 +1,6 @@
-//! A solution to a [`crate::problem::ProxyProblem`].
+//! A solution to a [`ProxyProblem`].
 use crate::member::{Member, MemberId, MemberInfo, Proxy};
+use crate::metrics::ProxyMetrics;
 use crate::problem::ProxyProblem;
 
 use indexmap::map::IndexMap;
@@ -11,27 +12,6 @@ use rand::{rngs::StdRng, SeedableRng};
 use rocket_okapi::JsonSchema;
 use rocket_slogger::Slogger;
 use serde::Serialize;
-
-#[derive(Clone, SerdeValue, Serialize)]
-/// Metrics for how much representation the [`crate::solution::ProxySolution`]
-/// has achieved.
-pub struct ProxyMetrics {
-    /// From [`crate::problem::ProxyProblem`]: How many absent members each
-    /// present member MAY represent.
-    pub capacity: usize,
-    /// From [`crate::problem::ProxyProblem`]: How many members total.
-    pub total: usize,
-    /// From [`crate::problem::ProxyProblem`]: How many members present.
-    pub present: usize,
-    /// From [`crate::problem::ProxyProblem`]: How many members absent.
-    pub absent: usize,
-    /// From [`ProxySolution`]: How many members are represented in this
-    /// solution.
-    pub represented: usize,
-    /// From [`ProxySolution`]: How many members cannot be represented in this
-    /// solution.
-    pub unrepresented: usize,
-}
 
 #[derive(new, JsonSchema, Serialize)]
 /// A pending or computed solution to a [`crate::problem::ProxyProblem`].

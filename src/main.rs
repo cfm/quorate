@@ -3,10 +3,11 @@
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
 
-use crate::problem::ProxyProblem;
+use crate::problem::{solve, ProxyProblem};
 use crate::solution::ProxySolution;
 
 pub mod member;
+pub mod metrics;
 pub mod problem;
 pub mod solution;
 
@@ -42,12 +43,9 @@ fn get_health_ready(log: Slogger) -> Status {
 /// [`solution::ProxySolution`].  `ProxySolution` is deterministic and constant
 /// for a given `ProxyProblem`.
 fn post_solution(log: Slogger, problem: Json<ProxyProblem>) -> Json<ProxySolution> {
-    let mut solution = ProxySolution::from_problem(&problem);
-
-    info!(log, "Beginning solution"; "metrics" => solution.metrics());
-    solution.solve(&log);
-
-    info!(log, "Solved"; "metrics" => solution.metrics());
+    info!(log, "Defined problem"; "metrics" => problem.metrics());
+    let solution = solve(&problem, &log);
+    info!(log, "Found solution"; "metrics" => solution.metrics());
     Json(solution)
 }
 
