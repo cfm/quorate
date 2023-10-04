@@ -7,20 +7,13 @@ PYTHON_REQUIREMENTS=requirements.txt
 build:
 	docker build --tag ${THIS} .
 
-cargo:
-	cargo install cargo-readme
-
-check: check-readme
+check:
 	cargo fmt -- --check
 	cargo clippy
 
 check-py: bin/anonymize
 	black --check $<
 	isort --check $<
-
-check-readme: README.md
-	cargo readme > $<
-	git diff --quiet $<
 
 docs:
 	cargo doc --no-deps
