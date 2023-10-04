@@ -23,11 +23,11 @@ pub trait Member {
     ///
     /// Furthermore, since a member CANNOT be represented by an absent member,
     /// we only store preferences corresponding to present members.
-    fn from_info(info: &MemberInfo, present: &IndexMap<MemberId, Category>) -> Student;
+    fn new_from_info(info: &MemberInfo, present: &IndexMap<MemberId, Category>) -> Student;
 }
 
 impl Member for Student {
-    fn from_info(info: &MemberInfo, present: &IndexMap<MemberId, Category>) -> Student {
+    fn new_from_info(info: &MemberInfo, present: &IndexMap<MemberId, Category>) -> Student {
         Student {
             name: info.id.clone(),
             preferences: info
@@ -39,7 +39,7 @@ impl Member for Student {
             exclude: present
                 .values()
                 .filter(|&v| !info.preferences.contains(&v.name))
-                .map(|v| present.get(&v.name).unwrap())
+                .map(|v| present.get(&v.name).expect("Category is missing .name"))
                 .cloned()
                 .collect(),
         }

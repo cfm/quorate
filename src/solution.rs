@@ -71,9 +71,9 @@ impl ProxySolution {
         solution
     }
 
-    /// Gets [`ProxyMetrics`] of the solution *in its current state* (whether
+    /// Returns [`ProxyMetrics`] of the solution *in its current state* (whether
     /// solved or unsolved).
-    pub fn get_metrics(&mut self) -> ProxyMetrics {
+    pub fn metrics(&self) -> ProxyMetrics {
         ProxyMetrics {
             capacity: self.capacity,
             total: self.members_present.len() + self.members_absent.len(),
@@ -103,11 +103,13 @@ impl ProxySolution {
         // Flatten each [`Proxy`]) of `P` → `{A1, A2, ...}` into `A1` → `P`,
         // `A2` → `P`, ... .
         for present in self.members_present.values() {
-            for absent in result.placed.get(&present.name).unwrap_or(&Vec::new()) {
-                self.members_unrepresented.remove(&absent.name);
-                self.members_represented
-                    .insert(absent.name.clone(), present.name.clone());
-                debug!(log, "Proxy assigned"; "proxy_for" => absent.name.clone(), "proxied_by" => present.name.clone());
+            if let Some(assigned) = result.placed.get(&present.name) {
+                for absent in assigned {
+                    self.members_unrepresented.remove(&absent.name);
+                    self.members_represented
+                        .insert(absent.name.clone(), present.name.clone());
+                    debug!(log, "Proxy assigned"; "proxy_for" => absent.name.clone(), "proxied_by" => present.name.clone());
+                }
             }
         }
 
@@ -133,7 +135,7 @@ impl ProxySolution {
     fn load_preferences(&mut self, members: &Vec<MemberInfo>) {
         for info in members {
             if !self.members_present.contains_key(&info.id) {
-                let absent = <Student as Member>::from_info(info, &self.members_present);
+                let absent = Student::new_from_info(info, &self.members_present);
                 self.members_absent.insert(info.id.clone(), absent);
                 self.members_unrepresented.insert(info.id.clone());
             }

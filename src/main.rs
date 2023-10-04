@@ -44,10 +44,10 @@ fn get_health_ready(log: Slogger) -> Status {
 fn post_solution(log: Slogger, problem: Json<ProxyProblem>) -> Json<ProxySolution> {
     let mut solution = ProxySolution::from_problem(&problem);
 
-    info!(log, "Beginning solution"; "metrics" => solution.get_metrics());
+    info!(log, "Beginning solution"; "metrics" => solution.metrics());
     solution.solve(&log);
 
-    info!(log, "Solved"; "metrics" => solution.get_metrics());
+    info!(log, "Solved"; "metrics" => solution.metrics());
     Json(solution)
 }
 
