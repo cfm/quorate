@@ -6,9 +6,13 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+aws_lambda_events = "0.7.3"
 derive-new = "0.5.9"
 erased-serde = "0.3.31"
+http = "0.2.9"
 indexmap = "1.9.3"
+lambda_runtime = "0.7.3"
+log = "0.4.17"
 matchmaker = "0.1.0"
 okapi = { version = "0.4.0", features = ["derive_json_schema"] }
 rand = "0.7.3"
@@ -17,7 +21,9 @@ rocket-slogger = { version = "0.1.0", features = ["bunyan", "transactions"] }
 rocket_okapi = "0.8.0-rc.3"
 schemars = "0.8.13"
 serde = { version = "1.0", features = ["derive"] }
+simple_logger = "1.16.0"
 slog = { version = "2.7.0", features = ["nested-values"] }
 slog-bunyan = "2.4.0"
 slog-json = { version = "2.6.1", features = ["nested-values"] }
 slog_derive = "0.2.0"
+tokio = "1.32.0"
