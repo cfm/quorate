@@ -10,6 +10,7 @@ build:
 check:
 	cargo fmt -- --check
 	cargo clippy
+	cargo rustdoc -- -Z unstable-options --check
 
 check-py: bin/anonymize
 	black --check $<
