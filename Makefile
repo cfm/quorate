@@ -12,7 +12,7 @@ cargo:
 
 check: check-readme
 	cargo fmt -- --check
-	cargo clippy -- --deny clippy::all
+	cargo clippy
 
 check-py: bin/anonymize
 	black --check $<

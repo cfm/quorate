@@ -1,3 +1,4 @@
+#![deny(clippy::all)]
 #![warn(missing_docs)]
 /*!
 A one-trick API for matching a member `A` absent from a meeting to a member `P`
