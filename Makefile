@@ -9,7 +9,7 @@ build:
 
 check:
 	cargo fmt -- --check
-	cargo clippy
+	cargo clippy --all-features --
 	cargo rustdoc -- -Z unstable-options --check
 
 check-py: bin/anonymize
@@ -32,7 +32,7 @@ run:
 
 test:
 	clear || true
-	cargo test -- --show-output
+	cargo test --all-features -- --show-output
 
 venv:
 	virtualenv --python python3 ${VENV}
