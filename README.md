@@ -29,19 +29,18 @@ Beyond the usual `cargo {build,run,test}` invocations, `make {build,run}` wrap
 $ tree -L 1
 .
 ├── bin               # development scripts
+├── functions         # → "src/", served as Netlify Functions
 ├── Cargo.lock
 ├── Cargo.toml
 ├── Dockerfile        # → nginx.conf + entrypoint.sh
-├── entrypoint.sh     # → proxy-solver-api
-├── heroku.yml        # → Dockerfile
+├── entrypoint.sh     # → proxy-solver-api (from "cargo install")
 ├── LICENSE
 ├── Makefile
 ├── nginx.conf        # for CORS
 ├── README.md
 ├── requirements.txt  # for developer scripts in "bin/"
 ├── resources         # test fixtures
-├── src
-└── target
+└── src
 ```
 
 ## Usage

@@ -5,7 +5,7 @@
 FROM rust:1.67 as builder
 WORKDIR /usr/src/proxy-solver-api
 COPY . .
-RUN cargo install --path .
+RUN cargo install --all-features --path .
 
 # Run:
 FROM nginx:latest
