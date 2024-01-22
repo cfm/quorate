@@ -23,6 +23,7 @@ extern crate slog_derive;
 use rocket::config::Config;
 use rocket::http::Status;
 use rocket::log::LogLevel;
+use rocket::serde::json;
 use rocket::serde::json::Json;
 use rocket_okapi::{openapi, openapi_get_routes};
 
@@ -65,6 +66,7 @@ fn rocket() -> _ {
 use aws_lambda_events::encodings::Body;
 use aws_lambda_events::event::apigw::{ApiGatewayProxyRequest, ApiGatewayProxyResponse};
 use http::header::HeaderMap;
+use http::Method;
 use lambda_runtime::{handler_fn, Context, Error};
 use log::LevelFilter;
 use simple_logger::SimpleLogger;
@@ -77,27 +79,47 @@ async fn main() -> Result<(), Error> {
         .init()
         .unwrap();
 
-    let func = handler_fn(my_handler);
+    let func = handler_fn(handler);
     lambda_runtime::run(func).await?;
     Ok(())
 }
 
+// FIXME: We don't have to care about event.path here, but we might still want
+// to factor this block (including main()) out into a separate "solve.rs" that
+// can be symlinked from "./functions/".
 #[cfg(not(feature = "rocket"))]
-pub(crate) async fn my_handler(
+pub(crate) async fn handler(
     event: ApiGatewayProxyRequest,
     _ctx: Context,
 ) -> Result<ApiGatewayProxyResponse, Error> {
-    let path = event.path.unwrap();
+    let logger = Slogger::new_bunyan_logger(env!("CARGO_PKG_NAME"));
 
-    let resp = ApiGatewayProxyResponse {
-        status_code: 200,
-        headers: HeaderMap::new(),
-        multi_value_headers: HeaderMap::new(),
-        body: Some(Body::Text(format!("Hello from '{}'", path))),
-        is_base64_encoded: Some(false),
+    let res = match event.http_method {
+        Method::POST => {
+            let problem: ProxyProblem = json::from_str(&event.body.unwrap()).unwrap();
+
+            let solution = post_solution(logger, Json(problem));
+            // NB. T is .0 in Json<T> (https://api.rocket.rs/v0.5-rc/rocket/serde/json/struct.Json.html#structfield.0).
+            let body = json::to_pretty_string(&solution.0).unwrap();
+
+            ApiGatewayProxyResponse {
+                status_code: 200,
+                headers: HeaderMap::new(),
+                multi_value_headers: HeaderMap::new(),
+                body: Some(Body::Text(body)),
+                is_base64_encoded: Some(false),
+            }
+        }
+        _ => ApiGatewayProxyResponse {
+            status_code: 400,
+            headers: HeaderMap::new(),
+            multi_value_headers: HeaderMap::new(),
+            body: Some(Body::Empty),
+            is_base64_encoded: Some(false),
+        },
     };
 
-    Ok(resp)
+    Ok(res)
 }
 
 #[cfg(test)]
