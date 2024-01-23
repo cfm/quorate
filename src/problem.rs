@@ -6,8 +6,10 @@ use crate::solution::ProxySolution;
 use rocket_okapi::JsonSchema;
 use rocket_slogger::Slogger;
 use serde::Deserialize;
+use ts_rs::TS;
 
-#[derive(Deserialize, JsonSchema)]
+#[derive(Deserialize, JsonSchema, TS)]
+#[ts(export)]
 /// A proxy-representation problem to solve.
 pub struct ProxyProblem {
     /// How many absent members each present member MAY represent.

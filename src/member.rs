@@ -6,6 +6,7 @@ use matchmaker::{Category, Student};
 
 use rocket_okapi::JsonSchema;
 use serde::Deserialize;
+use ts_rs::TS;
 
 /// An opaque [`String`] that uniquely keys a [`Member`] and identifies their
 /// [`MemberInfo`]`.preferences`.
@@ -46,7 +47,8 @@ impl Member for Student {
     }
 }
 
-#[derive(Deserialize, JsonSchema)]
+#[derive(Deserialize, JsonSchema, TS)]
+#[ts(export)]
 /// Stores members' preference contraints.
 pub struct MemberInfo {
     /// In graph terms, the member's node.

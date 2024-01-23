@@ -12,8 +12,10 @@ use rand::{rngs::StdRng, SeedableRng};
 use rocket_okapi::JsonSchema;
 use rocket_slogger::Slogger;
 use serde::Serialize;
+use ts_rs::TS;
 
-#[derive(new, JsonSchema, Serialize)]
+#[derive(new, JsonSchema, Serialize, TS)]
+#[ts(export)]
 /// A pending or computed solution to a [`ProxyProblem`].
 pub struct ProxySolution {
     #[serde(skip)]
@@ -33,10 +35,12 @@ pub struct ProxySolution {
     pub members_absent: IndexMap<MemberId, Student>,
 
     #[new(default)]
+    #[ts(type = "Record<string, string>")]
     /// `A` → `P` for absent member A represented by present member P.
     pub members_represented: IndexMap<MemberId, MemberId>,
 
     #[new(default)]
+    #[ts(type = "string[]")]
     /// Absent members who are not represented in this solution.
     pub members_unrepresented: IndexSet<MemberId>,
 }
