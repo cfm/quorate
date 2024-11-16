@@ -17,7 +17,7 @@ log = "0.4.17"
 matchmaker = "0.1.0"
 okapi = { version = "0.4.0", features = ["derive_json_schema"] }
 rand = "0.7.3"
-rocket = { version = "0.5.0-rc.3", features = ["json"] }
+rocket = { version = "<=0.5.0-rc.3", features = ["json"] }  # rocket-slogger requires rocket::outcome::Failure
 rocket-slogger = { version = "0.1.0", features = ["bunyan", "transactions"] }
 rocket_okapi = "0.8.0-rc.3"
 schemars = "0.8.13"

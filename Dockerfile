@@ -2,7 +2,7 @@
 # Adapted from <https://hub.docker.com/_/rust/>.
 
 # Build:
-FROM rust:1.67 as builder
+FROM rust:latest as builder
 WORKDIR /usr/src/proxy-solver-api
 COPY . .
 RUN cargo install --all-features --path .
