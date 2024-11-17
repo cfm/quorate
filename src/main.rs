@@ -84,9 +84,6 @@ async fn main() -> Result<(), Error> {
     Ok(())
 }
 
-// FIXME: We don't have to care about event.path here, but we might still want
-// to factor this block (including main()) out into a separate "solve.rs" that
-// can be symlinked from "./functions/".
 #[cfg(not(feature = "rocket"))]
 pub(crate) async fn handler(
     event: ApiGatewayProxyRequest,
@@ -94,8 +91,15 @@ pub(crate) async fn handler(
 ) -> Result<ApiGatewayProxyResponse, Error> {
     let logger = Slogger::new_bunyan_logger(env!("CARGO_PKG_NAME"));
 
-    let res = match event.http_method {
-        Method::POST => {
+    let res = match (event.http_method, event.path.unwrap().as_str()) {
+        (Method::GET, path) => ApiGatewayProxyResponse {
+            status_code: get_health_ready(logger).code as i64,
+            headers: HeaderMap::new(),
+            multi_value_headers: HeaderMap::new(),
+            body: Some(Body::Empty),
+            is_base64_encoded: Some(false),
+        },
+        (Method::POST, "/solution") => {
             let problem: ProxyProblem = json::from_str(&event.body.unwrap()).unwrap();
 
             let solution = post_solution(logger, Json(problem));
